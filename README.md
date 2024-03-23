@@ -1,5 +1,5 @@
 # CS151-NBAFX
-JavaFX Nba web-application
+JavaFX Nba application
 
 Team #13, Members: 1
 
