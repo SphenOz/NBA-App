@@ -3,7 +3,7 @@ import os
 
 import discord
 from dotenv import load_dotenv
-from discord import Intents, Client, Message
+from discord import Intents, Client, Message, Embed
 from stats import get_player
 
 load_dotenv()
@@ -19,16 +19,32 @@ async def send_message(message: Message, user_message: str) -> None:
         print('(Message was empty, check intents)')
         return
     
-    is_private =user_message[0] == '?'
+    is_prefix =user_message[0] == '?'
 
-    if is_private:
+    if is_prefix:
         user_message = user_message[1:]
-    
-    try:
-        response = get_player(user_message)
-        await message.author.send(response) if is_private else await message.channel.send(response)
-    except Exception as e:
-        print(e)
+        try:
+            statList = get_player(user_message)
+            embedV = Embed(title=user_message, color=0x00ff00, description="Basic Season Stats")
+            embedV.add_field(name="Season: ", value=statList[0], inline=True)
+            embedV.add_field(name="Team: ", value=statList[1], inline=True)
+            embedV.add_field(name="GP: \n", value=statList[2], inline=True)
+            embedV.add_field(name="FG%: ", value=str(round(statList[3]*100,2)) + "%", inline=True)
+            embedV.add_field(name="3PT%: ", value=str(round(statList[4]*100,2)) + "%    ", inline=True)
+            embedV.add_field(name="FT%: ", value=str(round(statList[5]*100,2)) + "%", inline=True)
+            embedV.add_field(name="PPG: ", value=round(statList[6]/statList[2],1), inline=True)
+            embedV.add_field(name="RPG: ", value=round(statList[7]/statList[2],1), inline=True)
+            embedV.add_field(name="APG: \n", value=round(statList[8]/statList[2],1), inline=True)
+            embedV.add_field(name="SPG: ", value=round(statList[9]/statList[2],1), inline=True)
+            embedV.add_field(name="BPG: ", value=round(statList[10]/statList[2],1), inline=True)
+            embedV.add_field(name="TOV: ", value=round(statList[11]/statList[2],1), inline=True)
+            urlI = f'https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{statList[12]}.png'
+            print(urlI)
+            embedV.set_image(url=urlI)
+            await message.channel.send(embed=embedV)
+        except Exception as e:
+            if str(e) == "Player Not Found":
+                await message.channel.send(content="y")
 
 @client.event
 async def on_ready() -> None:
