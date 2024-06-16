@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  max-width: 2280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -33,8 +33,9 @@
   }
 }
 
-.card {
+.table {
   padding: 2em;
+  width: 80%;
 }
 
 .read-the-docs {
