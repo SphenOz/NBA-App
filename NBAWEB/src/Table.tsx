@@ -1,5 +1,5 @@
 import { useState, useEffect, Key, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from 'react'
-import './Card.css'
+import './Table.css'
 
 export default function Card (prop : any) {
     const a = prop.player
