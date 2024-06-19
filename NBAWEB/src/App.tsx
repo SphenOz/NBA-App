@@ -11,7 +11,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-import SearchPage from './PlayerSearch'
+import SearchPage from './Pages/PlayerSearch.tsx'
 
 function App() {
   return (

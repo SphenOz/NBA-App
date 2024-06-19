@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 import axios from 'axios'
 import { Outlet, Link } from "react-router-dom";
-import Table from './Table'
+import Table from '../Table'
 
 export default function SearchPage() {
   const [count, setCount] = useState(0);
