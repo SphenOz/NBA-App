@@ -24,7 +24,8 @@ export default function Signup () {
     const [success, setSuccess] = useState(false);
 
     const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-    const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+    const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z]).{8,24}$/;
+    //(?=.*[0-9])(?=.*[!@#$%])
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -64,8 +65,10 @@ export default function Signup () {
             setErrMsg("Invalid Entry");
             return;
         }
-        const response = await axios.post(`http://localhost:8080/api/user?username=${username}&password=${password}`)
+        const response = await axios.post(`http://localhost:8080/api/signup?username=${username}&password=${password}`)
         console.log(response.data)
+        const yummers = await axios.get(`http://localhost:8080/api/login?username=${username}&password=${password}`)
+        console.log(yummers.data)
         navigate(`/`)
     }
 

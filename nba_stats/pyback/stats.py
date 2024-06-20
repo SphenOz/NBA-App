@@ -1,46 +1,53 @@
-from flask import Flask, jsonify, request
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+from flask import redirect, request, url_for
+from flask_login import current_user, login_user
+import sqlalchemy as sa
 import json
 import sqlite3
 import numpy as np
-from config import Config
 from nba_api.stats.endpoints import playercareerstats
 from nba_api.stats.static import players
-from __init__ import app
+from __init__ import create_app,db
+from models import User
 
-
+app = create_app()
 player_dict = players.get_active_players()
-app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-migrate = Migrate(app,db)
-cors = CORS(app,origins="*")
 userinput = "a"
 season = -1
+tTeam = 'placeholder'
+app.app_context().push()
+db.drop_all()
+db.create_all()
 
-connect = sqlite3.connect('database.db')
-cursor = connect.cursor()
-cursor.execute(
-    'CREATE TABLE IF NOT EXISTS USERS (ID INTEGER PRIMARY KEY, username, password, team )'
-)
-print(cursor.execute("SELECT username FROM USERS").fetchone())
-@app.route("/api/user", methods=['GET', 'POST'])
-def createUser():
-    if request.method == 'POST':
-        username = request.args.get('username')
-        password = request.args.get('password')
-
-        with sqlite3.connect('database.db') as user:
-            cursor = user.cursor()
-            cursor.execute("INSERT INTO USERS (username, password) VALUES (?,?)", (username, password))
-            pop = cursor.execute("SELECT username FROM USERS WHERE username =?", [username])
-            print("Successfully added: " + str(pop.fetchone()))
-            user.commit()
-        return username
+@app.route("/api/login", methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return "Not so blunderish"
+    if request.method == 'GET':
+        uName = request.args.get('username')
+        user = db.session.scalar(
+            sa.select(User).where(User.username == uName)
+        )
+        if user is None or not user.check_password(request.args.get('password')):
+            print("INVALID")
+            return("INVALID")
+        login_user(user, False)
+        return "SUUUCCCESSS"
     else:
         return "oops"
+
+@app.route("/api/signup", methods=['GET', 'POST'])
+def signup():
+    if current_user.is_authenticated:
+        return "Gods blunder"
+    if request.method == 'POST':
+        user = User(username=request.args.get('username'), team=tTeam)
+        user.set_password(request.args.get('password'))
+        db.session.add(user)
+        db.session.commit()
+        print("REGISTERED A USER")
+        return "Gods blunder"
+    return "failed"
+    
 
 @app.route("/api/stats", methods=['GET'])
 def get_player(user_input = "lebron james", season = -1):
@@ -76,19 +83,6 @@ def get_player(user_input = "lebron james", season = -1):
 def np_encoder(object):
     if isinstance(object, np.generic):
         return object.item()
-
-# def users():
-#     return jsonify(
-#         {
-#             "users": [
-#                 'coc',
-#                 'doc'
-#             ]
-#         }
-#     )
-# dinkdonk = abc['SEASON_ID','TEAM_ABBREVIATION','GP','FG_PCT', 'FG3_PCT','FT_PCT','PTS','REB','AST','STL','BLK','TOV','PLAYER_ID']
-# print(abc)
-
 
     
 if __name__ == "__main__":
