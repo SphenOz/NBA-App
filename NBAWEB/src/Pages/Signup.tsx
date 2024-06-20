@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./Signup.css"
+import axios from "axios";
 
 export default function Signup () {
     
@@ -24,6 +25,7 @@ export default function Signup () {
 
     const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
     const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+    const navigate = useNavigate()
 
     useEffect(() => {
         if(userRef.current){
@@ -41,6 +43,7 @@ export default function Signup () {
     useEffect(() => {
         setValidPwd(PWD_REGEX.test(password));
         setValidMatch(password === matchPwd);
+        console.log(password)
         if(validMatch){
             console.log("YO")
         }
@@ -61,6 +64,9 @@ export default function Signup () {
             setErrMsg("Invalid Entry");
             return;
         }
+        const response = await axios.post(`http://localhost:8080/api/user?username=${username}&password=${password}`)
+        console.log(response.data)
+        navigate(`/`)
     }
 
     return(

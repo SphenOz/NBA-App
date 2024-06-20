@@ -15,9 +15,6 @@ export default function SearchPage() {
     console.log(response.data)
     setArray(response.data)
   }
-  useEffect(() => {
-    fetchAPI("seth curry", 21)
-  },[])
   const handleSubmit = (event: any) => {
     event.preventDefault();
     fetchAPI(pname, count)

@@ -4,7 +4,7 @@ import os
 import discord
 from dotenv import load_dotenv
 from discord import Intents, Client, Message, Embed, app_commands
-from nba_stats.pyback.stats import get_player
+from stats import get_player
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
