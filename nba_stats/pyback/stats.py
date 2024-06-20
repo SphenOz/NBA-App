@@ -8,7 +8,7 @@ import numpy as np
 from config import Config
 from nba_api.stats.endpoints import playercareerstats
 from nba_api.stats.static import players
-from pyback
+from __init__ import app
 
 
 player_dict = players.get_active_players()
