@@ -67,10 +67,20 @@ export default function Signup () {
         }
         const response = await axios.post(`http://localhost:8080/api/signup?username=${username}&password=${password}`)
         console.log(response.data)
-        const yummers = await axios.get(`http://localhost:8080/api/login?username=${username}&password=${password}`)
-        console.log(yummers.data)
-        navigate(`/`)
+        handleLogin();
+        console.log(`/home/${username}`)
+        navigate(`/home/${username}`)
     }
+    const handleLogin = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/login?username=${username}&password=${password}`)
+            console.log(response.data)
+            localStorage.setItem('token', response.data.token);
+            // Redirect or update state to reflect logged-in status
+        } catch (error) {
+            console.error('Login failed:', error);
+        }
+    };
 
     return(
         <>

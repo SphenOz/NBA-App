@@ -1,12 +1,13 @@
-from flask import redirect, request, url_for
-from flask_login import current_user, login_user
+from flask import jsonify, redirect, request, url_for
+from flask_login import current_user, login_required, login_user
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import sqlalchemy as sa
 import json
 import sqlite3
 import numpy as np
 from nba_api.stats.endpoints import playercareerstats
 from nba_api.stats.static import players
-from __init__ import create_app,db
+from __init__ import create_app,db,jwt
 from models import User
 
 app = create_app()
@@ -15,8 +16,15 @@ userinput = "a"
 season = -1
 tTeam = 'placeholder'
 app.app_context().push()
-db.drop_all()
 db.create_all()
+
+@app.route("/api/home/<username>", methods=['GET'])
+@jwt_required()
+def home(username):
+    current_user = get_jwt_identity()
+    user = db.first_or_404(sa.select(User).where(User.username == username))
+    return user.team
+
 
 @app.route("/api/login", methods=['GET', 'POST'])
 def login():
@@ -30,8 +38,10 @@ def login():
         if user is None or not user.check_password(request.args.get('password')):
             print("INVALID")
             return("INVALID")
+        print(user.username)
         login_user(user, False)
-        return "SUUUCCCESSS"
+        token = create_access_token(user.username)
+        return jsonify({"token": token})
     else:
         return "oops"
 
