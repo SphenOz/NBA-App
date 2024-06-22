@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Params, useParams } from "react-router-dom";
-import axiosInstance from '../axiosConfig';
+import axiosInstance from '../Auth/axiosConfig';
+import Navbar from "../ReusableComponents/Navbar";
 
 export default function Home(name: any ){
     const [team, setTeam] = useState("Freeing the Promise Lands")
@@ -26,6 +27,7 @@ export default function Home(name: any ){
     }, [name])
     return(
         <p>
+            <Navbar></Navbar>
             {team}
         </p>
     )

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./Signup.css"
 import axios from "axios";
+import Navbar from "../ReusableComponents/Navbar";
+import { setToken } from "../Auth/authService";
 
 export default function Signup () {
     
@@ -75,7 +77,7 @@ export default function Signup () {
         try {
             const response = await axios.get(`http://localhost:8080/api/login?username=${username}&password=${password}`)
             console.log(response.data)
-            localStorage.setItem('token', response.data.token);
+            setToken(response.data.token)
             // Redirect or update state to reflect logged-in status
         } catch (error) {
             console.error('Login failed:', error);
@@ -84,35 +86,40 @@ export default function Signup () {
 
     return(
         <>
+            <Navbar></Navbar>
             <div className="signupbox">
-                <h1><Link to={`/`}>Return</Link></h1>
+                <h1>Register</h1>
                 <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                 <div className="forms">
                 <form onSubmit={handleSubmit}>
                     <label className="username">
-                        <input
-                            type="text"
-                            id="username"
-                            ref={userRef}
-                            autoComplete="off"
-                            value={username}
-                            aria-invalid={validName ? "false" : "true"}
-                            aria-describedby="uidnote"
-                            placeholder="username"
-                            required
-                            onChange={(e) => setUsername(e.target.value)}
-                            onFocus={() => setUserFocus(true)}
-                            onBlur={() => setUserFocus(false)}
-                        /> 
-                       </label>
-                        <p id="uidnote" className={userFocus && username && !validName ? "instructions" : "offscreen"}>
-                            4 to 24 characters.
-                            Must begin with a letter a-z
-                            Letters, Numbers, Underscores only.
-                        </p>
-                    <label className="password">
+                        <h2>Username: </h2>
+                    </label>
                     <input
-                        type="password"
+                        type="text"
+                        id="username"
+                        ref={userRef}
+                        autoComplete="off"
+                        value={username}
+                        aria-invalid={validName ? "false" : "true"}
+                        aria-describedby="uidnote"
+                        placeholder="username"
+                        required
+                        onChange={(e) => setUsername(e.target.value)}
+                        onFocus={() => setUserFocus(true)}
+                        onBlur={() => setUserFocus(false)}
+                    /> 
+                    <p id="uidnote" className={userFocus && username && !validName ? "instructions" : "offscreen"}>
+                        4 to 24 characters.
+                        Must begin with a letter a-z
+                        Letters, Numbers, Underscores only.
+                    </p>
+                    
+                    <label className="password">
+                        <h2>Password: </h2>
+                    </label>
+                    <input
+                        type="text"
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)} 
@@ -122,14 +129,15 @@ export default function Signup () {
                         onFocus={() => setPwdFocus(true)}
                         onBlur={() => setPwdFocus(false)}
                         required
-                        />
-                    </label>
-                    <p id="pwdnote">
+                    />
+                    <p id="pwdnote" className={pwdFocus && !validPwd ? "instructions" : "offscreen"}>
                         This little note means YOU fucked up your password
                     </p>
                     <label className="confirm_pwd">
+                        <h2>Confirm Password:</h2>
+                    </label>
                     <input
-                        type="password"
+                        type="text"
                         id="confirm_pwd"
                         value={matchPwd}
                         onChange={(e) => setMatchPwd(e.target.value)} 
@@ -140,8 +148,7 @@ export default function Signup () {
                         onBlur={() => setMatchFocus(false)}
                         required
                         />
-                    </label>
-                    <p id="confirmnote">
+                    <p id="confirmnote" className={matchFocus && !validPwd ? "instructions" : "offscreen"}>
                         This little note means YOU fucked up confirming your password
                     </p>
                     <button disabled={!validMatch || !validPwd || !validName ? true : false}>Sign Up</button>
