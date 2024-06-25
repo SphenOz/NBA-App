@@ -1,43 +1,46 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axiosInstance from "../Auth/axiosConfig";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css"
-import useAuth from "../Auth/useAuth";
-import { removeToken } from "../Auth/authService";
+import { useAuth } from "../Auth/authContext";
+import axiosInstance from "../Auth/axiosConfig";
 
 export default function Navbar () {
-    const [isAuth, setIsAuth] = useState(false);
-    const  token  = useAuth();
+    const [user, setUser] = useState("")
+    const  {token, logout, isLoggedIn, username, setUsername}  = useAuth();
     const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
-        const checkToken = () => {
-            if(token) {
-                console.log("We Found the Token: ", token)
-                setIsAuth(true);
-            } else {
-                console.log("Token Not Found")
+        console.log("executed")
+        const getUsername = async() => {
+            try{
+                console.log(token)
+                if(!(token==null)){
+                    const name = await axiosInstance.get('/username')
+                    setUsername(name.data)
+                }
             }
-        };
+            catch (error) {
+                console.error('Error grabbing username', error)
+            }
+            
+        }
+        getUsername()
+    }, [token])
 
-        checkToken();
-    }, [location, token])
-
-    function logout() {
-        removeToken();
+    function handleLogout() {
+        logout()
+        setUser("")
         navigate(`/`);
     }
 
     return(
         <>
             <div className="sidebar">
-                <h2><Link to={"/"}>Player_Search </Link></h2>
-                <h2>{isAuth ?
-                    <Link to={'/home'}>Home</Link> : 'not so cock ass'} </h2>
-                <h2>Register </h2>
-                <button onClick={() => logout()}></button>
+                <h2 className="Navbar"><Link to={"/playersearch"}>Player_Search </Link></h2>
+                <h2 className="Navbar">{isLoggedIn ?
+                    <Link to={`/home/${username}`}>{username}</Link> : 'not so cock ass'} </h2>
+                <h2 className="Navbar"><Link to={`/signup`}>Register</Link></h2>
+                <button onClick={() => handleLogout()}></button>
             </div>
         </>
     )

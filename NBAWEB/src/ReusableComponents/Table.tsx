@@ -1,12 +1,11 @@
-import { useState, useEffect, Key, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from 'react'
+import { Key, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from 'react'
 import './Table.css'
 
 export default function Card (prop : any) {
     const a = prop.player
-    const [array, setArray] = useState([]);
     return(
         <>
-            <div>
+            <div className='t-table'>
                 <table>
                     <thead>
                         <tr className='thead_row'>

@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Signup.css"
-import axios from "axios";
 import Navbar from "../ReusableComponents/Navbar";
+import axiosInstance from "../Auth/axiosConfig";
+import { useAuth } from "../Auth/authContext";
 
-export default function Signup () {
+export default function Login () {
+    const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
+    const { login } = useAuth();
+    
     const userRef = React.useRef<HTMLInputElement>(null);
     const errRef = React.useRef<HTMLInputElement>(null);
 
@@ -15,10 +19,6 @@ export default function Signup () {
     const [password, setPassword ] = useState('');
     const [validPwd, setValidPwd] = useState(false);
     const [pwdFocus, setPwdFocus] = useState(false);
-
-    const [matchPwd, setMatchPwd] = useState('');
-    const [validMatch, setValidMatch] = useState(false);
-    const [matchFocus, setMatchFocus] = useState(false);
 
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
@@ -42,40 +42,35 @@ export default function Signup () {
     }, [username])
 
     useEffect(() => {
-        setValidPwd(PWD_REGEX.test(password));
-        setValidMatch(password === matchPwd);
-        console.log(password)
-        if(validMatch){
-            console.log("YO")
-        }
-        if(validPwd){
-            console.log("OK ITS VALID")
-        }
-    }, [password, matchPwd])
-
-    useEffect(() => {
         setErrMsg('');
-    }, [username, password, matchPwd])
+    }, [username, password])
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        const v1 = USER_REGEX.test(username);
-        const v2 = PWD_REGEX.test(password);
-        if (!v1 || !v2) {
-            setErrMsg("Invalid Entry");
-            return;
-        }
-        const response = await axios.post(`http://localhost:8080/api/signup?username=${username}&password=${password}`)
-        console.log(response.data)
+        handleLogin();
         setTimeout(() => {
-            navigate(`/login`)
+            navigate(`/home/${username}`)
         }, 500)
         
     }
+    const handleLogin = async () => {
+        try {
+            const response = await axiosInstance.get(`/login?username=${username}&password=${password}`)
+            console.log("Login Successful", response.data.token)
+            login(response.data.token)
+            await sleep(500)
+            const userN = await axiosInstance.get(`/username`)
+            setUsername(userN.data)
+            // Redirect or update state to reflect logged-in status
+        } catch (error) {
+            console.error('Login failed:', error);
+        }
+    };
+
     return(
         <div className="base">
             <div className="signupbox">
-                <h1>Register</h1>
+                <h1>Login</h1>
                 <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                 <div className="forms">
                 <form onSubmit={handleSubmit}>
@@ -83,7 +78,6 @@ export default function Signup () {
                         <h2 className="signupH2">Username: </h2>
                     </label>
                     <input
-                        className="su-input"
                         type="text"
                         id="username"
                         ref={userRef}
@@ -107,7 +101,6 @@ export default function Signup () {
                         <h2 className="signupH2">Password: </h2>
                     </label>
                     <input
-                        className="su-input"
                         type="text"
                         id="password"
                         value={password}
@@ -122,31 +115,11 @@ export default function Signup () {
                     <p id="pwdnote" className={pwdFocus && !validPwd ? "instructions" : "offscreen"}>
                         This little note means YOU fucked up your password
                     </p>
-                    <label className="su-label">
-                        <h2 className="signupH2">Confirm Password:</h2>
-                    </label>
-                    <input
-                        type="text"
-                        id="confirm_pwd"
-                        value={matchPwd}
-                        onChange={(e) => setMatchPwd(e.target.value)} 
-                        aria-invalid={validMatch ? "false" : "true"}
-                        aria-describedby="confirmnote"
-                        placeholder="password"
-                        onFocus={() => setMatchFocus(true)}
-                        onBlur={() => setMatchFocus(false)}
-                        required
-                        />
-                    <p id="confirmnote" className={matchFocus && !validPwd ? "instructions" : "offscreen"}>
-                        This little note means YOU fucked up confirming your password
-                    </p>
-                    <button disabled={!validMatch || !validPwd || !validName ? true : false} className="signbutton">Sign Up</button>
+                    <button className="signbutton">Login</button>
                 </form>
-                <Link to={'/login'}>Have an account?</Link>
                 </div>
             </div>
             
         </div>
     )
 }
-//Credit: https://www.youtube.com/watch?v=brcHK3P6ChQ&list=PL0Zuz27SZ-6PRCpm9clX0WiBEMB70FWwd

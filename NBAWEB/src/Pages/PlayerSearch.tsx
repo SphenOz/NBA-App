@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
-import { Outlet, Link } from "react-router-dom";
-import Table from '../Table'
+import { Link } from "react-router-dom";
+import Table from '../ReusableComponents/Table'
+import './Playersearch.css'
 
 export default function SearchPage() {
   const [count, setCount] = useState(0);
@@ -23,19 +24,20 @@ export default function SearchPage() {
 
   return (
     <>
-      <div>
-      </div>
-      <h1><Link to={`signup`}> TINGS </Link></h1>
-      <div className="table">
-        <form onSubmit={handleSubmit}>
-          <label> Enter a player:  
-            <input type="text"
-              value={pname}
-              onChange={(e) => setPname(e.target.value)} 
-            />
-          </label>
-        <input type="submit" />
-        </form>
+      <div className='table-container'>
+        <h1><Link to={`signup`}> TINGS </Link></h1>
+        <div className="table">
+          <form onSubmit={handleSubmit} className='ps-form'>
+            <label>
+              <input type="text"
+                className='ps-input'
+                placeholder='Enter a player name'
+                value={pname}
+                onChange={(e) => setPname(e.target.value)} 
+              />
+            </label>
+          </form>
+        </div>
         <Table player={array}></Table>
       </div>
     </>

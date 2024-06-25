@@ -25,11 +25,18 @@ def home(username):
     user = db.first_or_404(sa.select(User).where(User.username == username))
     return user.team
 
+@app.route('/api/username', methods=['GET'])
+@jwt_required()
+def get_username():
+    token = request.headers.get('Authorization').split(" ")[1]
+    print("TOKEN: ", token)
+    username = get_jwt_identity()
+    print("returning username: ", username)
+    return username
+
 
 @app.route("/api/login", methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return "Not so blunderish"
     if request.method == 'GET':
         uName = request.args.get('username')
         user = db.session.scalar(

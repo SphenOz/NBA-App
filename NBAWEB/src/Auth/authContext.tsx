@@ -3,7 +3,12 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 // Define the shape of the context state and functions
 interface AuthContextType {
     token: string | null;
+    username: string | null;
+    isLoggedIn: boolean;
+    login: (token: string) => void;
+    logout: () => void;
     setToken: (token: string | null) => void;
+    setUsername: (username: string | null) => void;
 }
 
 // Create the context with default undefined value
@@ -12,6 +17,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Provider component that wraps the application and provides the context value
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => !!localStorage.getItem('token'));
+    const [username, setUsername] = useState<string | null>(localStorage.getItem('username'));
+
+    const login = (token: string) => {
+        localStorage.setItem('token', token);
+        setToken(token);
+        setIsLoggedIn(true);
+    };
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username')
+        setUsername(null)
+        setToken(null)
+        console.log(token, "Removed")
+        setIsLoggedIn(false);
+    };
 
     // Sync the token state with localStorage
     useEffect(() => {
@@ -23,7 +45,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [token]);
 
     return (
-        <AuthContext.Provider value={{ token, setToken }}>
+        <AuthContext.Provider value={{ token, isLoggedIn, login, logout, setToken, username, setUsername}}>
             {children}
         </AuthContext.Provider>
     );

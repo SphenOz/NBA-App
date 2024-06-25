@@ -11,10 +11,10 @@
     display: flex;
     flex-direction: row;
 }
-h2{
+.Navbar{
     margin-right: 20px;
 }
-h2:hover{
+.Navbar:hover{
     color: black;
     cursor: pointer;
 }

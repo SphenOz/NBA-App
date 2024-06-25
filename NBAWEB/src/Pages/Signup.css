@@ -1,7 +1,9 @@
 #body{
     min-height: 100vh;
+    display: block;
+    justify-content: center;
 }
-#root{
+.base{
     height: 100%;
     width: 100%;
     margin: 0;
@@ -19,7 +21,7 @@
     padding: 2rem;
     background-color: rgba(0,0,0,0.4);
 }
-h2{
+.signupH2{
     margin: 0;
     padding: 0;
 }
@@ -30,18 +32,18 @@ h2{
 .hide {
     display: none;
 }
-label{
+.su-label{
     margin-top: 0.5rem;
     align-self: flex-start;
 }
-button {
+.signbutton {
     margin-top: 1.5rem;
     padding: 0.5rem;
     color: rgb(255, 255, 255);
     background-color: rgb(0, 0, 0);
 }
-button:disabled,
-button[disabled]{
+.signbutton:disabled,
+.signbutton[disabled]{
   border: 1px solid #060606;
   background-color: #00000054;
   color: #666666;
@@ -53,9 +55,8 @@ form {
     flex-grow: 1;
     padding-bottom: 1rem;
 }
-input[type="text"],
-input[type="password"],
-button,
+.su-input,
+.signbutton,
 textarea {
   font-family: 'Nunito', sans-serif;
   font-size: 22px;

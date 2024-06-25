@@ -6,6 +6,7 @@ import Navbar from "../ReusableComponents/Navbar";
 
 export default function Home(name: any ){
     const [team, setTeam] = useState("Freeing the Promise Lands")
+    const [loading, setLoading] = useState(true);
 
     type RouteParams = {
         username: string
@@ -19,15 +20,20 @@ export default function Home(name: any ){
             setTeam(response.data)
         } catch(error) {
             console.error("Last Rites")
+        } finally {
+            setLoading(false);
         }
     }
 
     useEffect(() => {
         fetchUser()
-    }, [name])
+    }, [])
+
+    if (loading) {
+        return "LOADING"
+    }
     return(
         <p>
-            <Navbar></Navbar>
             {team}
         </p>
     )
