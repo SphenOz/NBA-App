@@ -1,6 +1,7 @@
 from flask import jsonify, redirect, request, url_for
 from flask_login import current_user, login_required, login_user
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from nbaAPI import search_player
 import sqlalchemy as sa
 import json
 import sqlite3
@@ -64,6 +65,14 @@ def signup():
         print("REGISTERED A USER")
         return "Gods blunder"
     return "failed"
+
+@app.route("/api/set_team", methods=['POST'])
+@jwt_required
+def set_team():
+    team
+    if(request.method == 'POST'):
+        team = request.args.get('team')
+    
     
 
 @app.route("/api/stats", methods=['GET'])
@@ -75,13 +84,7 @@ def get_player(user_input = "lebron james", season = -1):
     print(lowered)
     ab = []
     try:
-        player = [player for player in player_dict if player['full_name'].lower() == lowered][0]
-        playerid = str(player['id'])
-        playerstats = playercareerstats.PlayerCareerStats(player_id=playerid)
-        playerdf = playerstats.get_data_frames()[0]
-        test = playerstats.get_dict()["resultSets"][0]["rowSet"]
-        print(playerstats.get_dict()["resultSets"][0]["headers"])
-        return test
+        return search_player(lowered)
         
         # if(season!= -1):
         #     playerInfo = playerdf.loc[season][['SEASON_ID','TEAM_ABBREVIATION','GP','FG_PCT', 'FG3_PCT','FT_PCT','PTS','REB','AST','STL','BLK','TOV','PLAYER_ID']]

@@ -80,6 +80,7 @@ export default function Login () {
                     <input
                         type="text"
                         id="username"
+                        className="su-input"
                         ref={userRef}
                         autoComplete="off"
                         value={username}
@@ -103,6 +104,7 @@ export default function Login () {
                     <input
                         type="text"
                         id="password"
+                        className="su-input"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)} 
                         aria-invalid={validPwd ? "false" : "true"}

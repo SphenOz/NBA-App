@@ -128,6 +128,7 @@ export default function Signup () {
                     <input
                         type="text"
                         id="confirm_pwd"
+                        className="su-input"
                         value={matchPwd}
                         onChange={(e) => setMatchPwd(e.target.value)} 
                         aria-invalid={validMatch ? "false" : "true"}
