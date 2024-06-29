@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from nbaAPI import search_player
 import sqlalchemy as sa
 import json
-import sqlite3
+import datetime
 import numpy as np
 from nba_api.stats.endpoints import playercareerstats
 from nba_api.stats.static import players
@@ -48,7 +48,9 @@ def login():
             return("INVALID")
         print(user.username)
         login_user(user, False)
-        token = create_access_token(user.username)
+        print(datetime.datetime.now())
+        time = datetime.timedelta(seconds=30)
+        token = create_access_token(identity=user.username, expires_delta=time)
         return jsonify({"token": token})
     else:
         return "oops"
@@ -72,6 +74,7 @@ def set_team():
     team
     if(request.method == 'POST'):
         team = request.args.get('team')
+    return team
     
     
 

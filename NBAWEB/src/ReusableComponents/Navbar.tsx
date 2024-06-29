@@ -13,7 +13,7 @@ export default function Navbar () {
         console.log("executed")
         const getUsername = async() => {
             try{
-                console.log(token)
+                console.log("TOKEN: " + token)
                 if(!(token==null)){
                     const name = await axiosInstance.get('/username')
                     setUsername(name.data)

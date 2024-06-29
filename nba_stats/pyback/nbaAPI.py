@@ -4,7 +4,7 @@ from nba_api.stats.static import players, teams
 
 player_dict = players.get_active_players()
 team_dict = teams.get_teams()
-print(player_dict)
+print(team_dict)
 def search_player(user_input = "lebron james"):
     lowered = user_input
     print(lowered)
@@ -22,6 +22,8 @@ def search_player(user_input = "lebron james"):
 
 def search_team(team_input = "GSW"):
     team = [team for team in team_dict if team['full_name'].lower() == team_input.lower()][0]
+    if not team:
+        team = [team for team in team_dict if team['abbreviation'].lower() == team_input.lower()][0]
     return team['full_name']
 
 print(search_team("Golden State Warriors"))

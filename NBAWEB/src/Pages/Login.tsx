@@ -12,7 +12,7 @@ export default function Login () {
     const userRef = React.useRef<HTMLInputElement>(null);
     const errRef = React.useRef<HTMLInputElement>(null);
 
-    const [username, setUsername ] = useState('');
+    const [username, setUsername ] = useState('joshuaL');
     const [validName, setValidName] = useState(false);
     const [userFocus, setUserFocus] = useState(false);
 
