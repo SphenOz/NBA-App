@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css"
 import { useAuth } from "../Auth/authContext";
 import axiosInstance from "../Auth/axiosConfig";
+import useAxiosInterceptor from "../Auth/useAxiosInterceptor";
 
 export default function Navbar () {
     const [user, setUser] = useState("")
@@ -19,8 +20,11 @@ export default function Navbar () {
                     setUsername(name.data)
                 }
             }
-            catch (error) {
+            catch (error:any) {
                 console.error('Error grabbing username', error)
+                if(error.message == "Token expired"){
+                    navigate('/signup')
+                }
             }
             
         }

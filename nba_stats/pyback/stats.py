@@ -49,7 +49,7 @@ def login():
         print(user.username)
         login_user(user, False)
         print(datetime.datetime.now())
-        time = datetime.timedelta(seconds=30)
+        time = datetime.timedelta(days=1)
         token = create_access_token(identity=user.username, expires_delta=time)
         return jsonify({"token": token})
     else:

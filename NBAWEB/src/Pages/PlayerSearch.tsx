@@ -1,24 +1,33 @@
 import { useState } from 'react'
 import axios from 'axios'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Table from '../ReusableComponents/Table'
 import './Playersearch.css'
 
 export default function SearchPage() {
-  const [count, setCount] = useState(0);
   const [array, setArray] = useState([]);
-  const [inputs, setInputs] = useState([]);
   const [pname, setPname] = useState("")
   
 
-  const fetchAPI = async (pname: string, season: number) => {
-    const response = await axios.get(`http://localhost:8080/api/stats?name=${pname}&season=${season}`)
-    console.log(response.data)
-    setArray(response.data)
+  const fetchAPI = async (pname: string) => {
+    try{
+      const response = await axios.get(`http://localhost:8080/api/stats?name=${pname}`)
+      console.log(response.data)
+      setArray(response.data)
+    }
+    catch (error: any) {
+      console.log("expected behavior")
+      if(error == "Token Expired"){
+        console.log(error)
+        const nav = useNavigate()
+        nav(`/signup`)
+      }
+    }finally{
+    }
   }
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    fetchAPI(pname, count)
+    fetchAPI(pname)
   }
   
 
