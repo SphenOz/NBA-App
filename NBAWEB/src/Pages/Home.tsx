@@ -50,8 +50,10 @@ export default function Home(name: any ){
     const selectTeam = async(key: string) =>{
         setLoading(true);
         try{
-            const response = await axiosInstance.post(`/set_team/?team=${key}`)
+            console.log(key)
+            const response = await axiosInstance.post(`/set_team?team=${key}`)
             setTeam(response.data)
+            console.log(response.data)
         }
         catch{
 

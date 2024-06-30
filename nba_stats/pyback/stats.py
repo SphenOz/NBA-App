@@ -69,12 +69,18 @@ def signup():
     return "failed"
 
 @app.route("/api/set_team", methods=['POST'])
-@jwt_required
+@jwt_required()
 def set_team():
-    team
+    token = request.headers.get('Authorization').split(" ")[1]
+    current_user = get_jwt_identity()
     if(request.method == 'POST'):
         team = request.args.get('team')
-    return team
+        user = db.session.scalar(
+            sa.select(User).where(User.username == current_user)
+        )
+        user.set_team(team)
+        return team
+    return "error"
     
     
 

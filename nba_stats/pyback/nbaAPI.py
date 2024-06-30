@@ -4,7 +4,7 @@ from nba_api.stats.static import players, teams
 
 player_dict = players.get_active_players()
 team_dict = teams.get_teams()
-print(team_dict)
+#print(team_dict)
 def search_player(user_input = "lebron james"):
     lowered = user_input
     print(lowered)
@@ -15,7 +15,7 @@ def search_player(user_input = "lebron james"):
         playerstats = playercareerstats.PlayerCareerStats(player_id=playerid)
         playerdf = playerstats.get_data_frames()[0]
         test = playerstats.get_dict()["resultSets"][0]["rowSet"]
-        print(playerstats.get_dict()["resultSets"][0]["headers"])
+        #print(playerstats.get_dict()["resultSets"][0]["headers"])
         return test
     except IndexError:
         raise IndexError("Player Not Found")
