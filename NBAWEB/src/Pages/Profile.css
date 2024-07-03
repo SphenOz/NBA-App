@@ -1,0 +1,17 @@
+.p-starplayer{
+    border: solid 2px black;
+    padding: 2px;
+    border-radius: 10px;
+    background-color: rgb(204, 235, 255);
+    width: 60%;
+    display: flex;
+    color: black;
+    align-items: center;
+}
+.p-staritem{
+    border:  solid 2px orchid;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: brown;
+    margin: 1px;
+}

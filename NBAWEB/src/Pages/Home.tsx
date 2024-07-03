@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Params, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axiosInstance from '../Auth/axiosConfig';
-import Navbar from "../ReusableComponents/Navbar";
 import "./Home.css"
-import lakersLogo from "../assets/logos/lakerslogo.svg"
 import { isTokenExpired, useAuth } from "../Auth/authContext";
+import Profile from "./Profile";
 //import { ReactComponent as Logo } from "../assets/logos/warriorslogo.svg"
 
 export default function Home(name: any ){
-    const [team, setTeam] = useState("Freeing the Promise Lands")
+    const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
     const [loading, setLoading] = useState(true);
-    const {token} = useAuth()
+    const {token, team, setTeam} = useAuth();
     const modules = import.meta.glob('../assets/logos/*.svg', {eager:true}) as Record<string, { default: string }>
     type Logos = {
         [key: string]: any;
@@ -31,15 +29,17 @@ export default function Home(name: any ){
       
     type RouteParams = {
         username: string
-      }
+    }
       
       const { username } = useParams<RouteParams>();
 
     const fetchUser = async() =>{
         try{
-            console.log("fetchUser - token: " + token)
             const response = await axiosInstance.get(`/home/${username}`);
+            console.log("fetchUser - team " + response.data + "      ")
             setTeam(response.data)
+            localStorage.setItem('team', response.data)
+            await sleep(500)
         } catch(error) {
             console.error(isTokenExpired())
         } finally {
@@ -54,6 +54,8 @@ export default function Home(name: any ){
             const response = await axiosInstance.post(`/set_team?team=${key}`)
             setTeam(response.data)
             console.log(response.data)
+            localStorage.setItem('team',response.data)
+            await sleep(300)
         }
         catch{
 
@@ -69,6 +71,9 @@ export default function Home(name: any ){
 
     if (loading) {
         return "LOADING"
+    }
+    if (localStorage.getItem('team')) {
+        return <Profile team={team}></Profile>
     }
     return(
         <div className="h-teamselect">

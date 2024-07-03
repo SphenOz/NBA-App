@@ -1,7 +1,7 @@
-from flask import jsonify, redirect, request, url_for
+from flask import abort, jsonify, redirect, request, url_for
 from flask_login import current_user, login_required, login_user
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from nbaAPI import search_player
+from nbaAPI import search_player, search_team, get_players
 import sqlalchemy as sa
 import json
 import datetime
@@ -14,8 +14,6 @@ from models import User
 app = create_app()
 player_dict = players.get_active_players()
 userinput = "a"
-season = -1
-tTeam = 'placeholder'
 app.app_context().push()
 db.create_all()
 
@@ -23,8 +21,15 @@ db.create_all()
 @jwt_required()
 def home(username):
     current_user = get_jwt_identity()
-    user = db.first_or_404(sa.select(User).where(User.username == username))
-    return user.team
+    print("Current: ", current_user)
+    thisUser = db.session.scalar(sa.select(User).where(User.username == username))
+    if thisUser is None:
+        abort(404, "invalid user")
+    print(thisUser.username)
+    print("team: ", thisUser.team)
+    if(thisUser.team):
+        return thisUser.team
+    return ""
 
 @app.route('/api/username', methods=['GET'])
 @jwt_required()
@@ -45,7 +50,7 @@ def login():
         )
         if user is None or not user.check_password(request.args.get('password')):
             print("INVALID")
-            return("INVALID")
+            abort(400, "User not present")
         print(user.username)
         login_user(user, False)
         print(datetime.datetime.now())
@@ -60,7 +65,7 @@ def signup():
     if current_user.is_authenticated:
         return "Gods blunder"
     if request.method == 'POST':
-        user = User(username=request.args.get('username'), team=tTeam)
+        user = User(username=request.args.get('username'))
         user.set_password(request.args.get('password'))
         db.session.add(user)
         db.session.commit()
@@ -75,10 +80,15 @@ def set_team():
     current_user = get_jwt_identity()
     if(request.method == 'POST'):
         team = request.args.get('team')
+        team = search_team(team) 
+        print(team)
         user = db.session.scalar(
             sa.select(User).where(User.username == current_user)
         )
         user.set_team(team)
+        print("For user.. ", user.username)
+        print("Setting team...", user.team)
+        db.session.commit()
         return team
     return "error"
     
@@ -91,21 +101,18 @@ def get_player(user_input = "lebron james", season = -1):
         # season = int(request.args.get('season'))
     lowered = user_input
     print(lowered)
-    ab = []
     try:
         return search_player(lowered)
-        
-        # if(season!= -1):
-        #     playerInfo = playerdf.loc[season][['SEASON_ID','TEAM_ABBREVIATION','GP','FG_PCT', 'FG3_PCT','FT_PCT','PTS','REB','AST','STL','BLK','TOV','PLAYER_ID']]
-        #     playerInfo = playerInfo.tolist()
-        #     playerInfo.append(playerdf.shape[0])
-        #     return json.dumps(playerInfo, default=np_encoder)
-        for a in range(playerdf.shape[0]):
-            playerInfo = playerdf.loc[a][['SEASON_ID','TEAM_ABBREVIATION','GP','FG_PCT', 'FG3_PCT','FT_PCT','PTS','REB','AST','STL','BLK','TOV','PLAYER_ID']]
-            playerInfo = playerInfo.tolist()
-            playerInfo.append(playerdf.shape[0])
-            ab.append(json.dumps(playerInfo, default=np_encoder))
-        return ab
+    except:
+        raise IndexError
+
+@app.route("/api/playersOfTeam", methods=['GET'])
+def getPlayers(teamToSearch = "default"):
+    if(request.method == 'GET'):
+        teamToSearch=request.args.get('team')
+    try:
+        listOfPlayers = get_players(teamToSearch)
+        return listOfPlayers
     except IndexError:
         raise IndexError("Player Not Found")
 

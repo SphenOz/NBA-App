@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css"
 import { useAuth } from "../Auth/authContext";
 import axiosInstance from "../Auth/axiosConfig";
-import useAxiosInterceptor from "../Auth/useAxiosInterceptor";
 
 export default function Navbar () {
     const [user, setUser] = useState("")
@@ -11,10 +10,8 @@ export default function Navbar () {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log("executed")
         const getUsername = async() => {
             try{
-                console.log("TOKEN: " + token)
                 if(!(token==null)){
                     const name = await axiosInstance.get('/username')
                     setUsername(name.data)

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Signup.css"
-import Navbar from "../ReusableComponents/Navbar";
 import axiosInstance from "../Auth/axiosConfig";
 import { useAuth } from "../Auth/authContext";
 
@@ -36,8 +35,6 @@ export default function Login () {
 
     useEffect(() => {
         const result = USER_REGEX.test(username);
-        console.log(result);
-        console.log(username);
         setValidName(result);
     }, [username])
 
@@ -47,11 +44,14 @@ export default function Login () {
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        handleLogin();
-        setTimeout(() => {
-            navigate(`/home/${username}`)
-        }, 500)
-        
+        try{
+            await handleLogin();
+            setTimeout(() => {
+                navigate(`/home/${username}`)
+            }, 500)
+        }catch (error:any) {
+            console.error(error)
+        }
     }
     const handleLogin = async () => {
         try {
@@ -62,10 +62,11 @@ export default function Login () {
             const userN = await axiosInstance.get(`/username`)
             setUsername(userN.data)
             // Redirect or update state to reflect logged-in status
-        } catch (error) {
+        } catch (error: any) {
             console.error('Login failed:', error);
+            throw error;
         }
-    };
+    }
 
     return(
         <div className="base">
