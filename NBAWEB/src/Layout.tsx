@@ -7,10 +7,10 @@ import useAxiosInterceptor from './Auth/useAxiosInterceptor';
 const Layout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     useAxiosInterceptor();
     return (
-        <div>
+        <>
             <Navbar />
             <main><Outlet/>{children}</main>
-        </div>
+        </>
     );
 };
 

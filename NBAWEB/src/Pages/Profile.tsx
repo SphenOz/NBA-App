@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import axiosInstance from "../Auth/axiosConfig";
 import "./Profile.css"
+import Strip from "../ReusableComponents/LineupDisplay";
 
 
 interface Props{
@@ -25,19 +26,32 @@ const Profile: React.FC<Props> = ({ team }) => {
     if(loading){
         return "LOADING";
     }
-    if (!array.length || !array[0]) {
+    if (!array.length || !array[1]) {
         return <div>No player data available</div>;
     }
     return(
-        <>
-        <div className="p-starplayer">
-            <img src={`https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${array[0][0]}.png`}/>
-            {array[0][27]}
-            <div className="p-staritem">{(Number(array[0][26])/Number(array[0][6])).toFixed(2)} PPG</div>
-            <div className="p-staritem">{(Number(array[0][20])/Number(array[0][6])).toFixed(2)} RPG </div>
-            <div className="p-staritem">{(Number(array[0][21])/Number(array[0][6])).toFixed(2)} APG</div>
+        <div className="profile-container">
+            <div className="p-featured"> 
+                {/* Player Array Defined as array[Player_Index][Player Name, Player Stats[0-27]] */}
+                <div className="p-starimg">
+                    <span className="p-f_name">{array[0][0]}</span><br></br><img src={`https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${array[0][1][0]}.png`}/>
+                </div>
+                <div className="p-featureditems">
+                    <div className="p-f_item"><h3 className="p-h3">PPG</h3>{(Number(array[0][1][26])/Number(array[0][1][6])).toFixed(2)}</div>
+                    <div className="p-f_item"><h3 className="p-h3">RPG</h3>{(Number(array[0][1][20])/Number(array[0][1][6])).toFixed(2)}</div>
+                    <div className="p-f_item"><h3 className="p-h3">APG</h3>{(Number(array[0][1][21])/Number(array[0][1][6])).toFixed(2)}</div>
+                    <div className="p-f_item"><h3 className="p-h3">FG%</h3>{(Number(array[0][1][11])*100).toFixed(1)}%</div>
+                    <div className="p-f_item"><h3 className="p-h3">3FG%</h3>{(Number(array[0][1][14])*100).toFixed(1)}%</div>
+                    <div className="p-f_item"><h3 className="p-h3">FT%</h3>{(Number(array[0][1][17])*100).toFixed(1)}%</div>
+                </div>
+            </div>
+            <div className="p-teamlist">
+                <Strip player={array}/>
+            </div>
+                {/* {array.map((player: any, season: Key) => (
+                    player[0]
+                ))} */}
         </div>
-        </>
     )
 }
 
