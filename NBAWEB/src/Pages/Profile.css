@@ -4,14 +4,16 @@
     background-color: rgb(13, 13, 13);
 }
 .p-teamlist{
-    width: 100%;
+    width: 95%;
     justify-content: center;
     display: flex;
+    margin-top: 5px;
+    padding: 5px;
 }
 .p-featured{
     border: solid 2px black;
-    padding: 2px;
-    border-radius: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
     background-color: rgba(15, 15, 15, 0.873);
     width: auto;
     height: 30%;

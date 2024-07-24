@@ -2,7 +2,6 @@ table {
     border-collapse: collapse;
     border-spacing: 3px;
     width: 100%;
-    table-layout: fixed;
   }
   
   th{
@@ -13,8 +12,7 @@ table {
   td{
     padding: 5px;
     border-radius: 3px;
-    border-bottom: 1px white solid;
-    border-left: 1px white solid;
+    border: 1px white solid;
   }
 .table_header{
     background-color: rgb(14, 175, 255);
