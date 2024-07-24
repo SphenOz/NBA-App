@@ -28,6 +28,17 @@ export default function Navbar () {
         getUsername()
     }, [token])
 
+    const changeTeam = async() => {
+        try{
+            console.log("Dink donk")
+            const response = await axiosInstance.put(`/set_team`)
+            window.location.reload();
+        }
+        catch (error:any) {
+            console.log("Something went wrong brodie")
+        }
+    }
+
     function handleLogout() {
         logout()
         setUser("")
@@ -40,8 +51,10 @@ export default function Navbar () {
                 <h2 className="Navbar"><Link to={"/playersearch"}>Player_Search </Link></h2>
                 <h2 className="Navbar">{isLoggedIn ?
                     <Link to={`/home/${username}`}>{username}</Link> : 'not so cock ass'} </h2>
-                <h2 className="Navbar"><Link to={`/signup`}>Register</Link></h2>
-                <button onClick={() => handleLogout()}></button>
+                <h2 className="Navbar">{!isLoggedIn ?
+                    <Link to={`/signup`}>Register</Link> : <button onClick={() => handleLogout()}>Logout</button>} </h2>
+                <h2 className="Navbar">{isLoggedIn ?
+                    <button onClick={() => changeTeam()}>Change Team</button>: ""}</h2>
             </div>
         </>
     )

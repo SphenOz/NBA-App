@@ -17400,7 +17400,7 @@
                     ]
                 },
                 {
-                    "player_name": "A.J. Lawson",
+                    "player_name": "AJ Lawson",
                     "player_id": 1630639,
                     "player_stats": [
                         [
@@ -27769,41 +27769,6 @@
         "players": [
             [
                 {
-                    "player_name": "Jermaine Samuels Jr.",
-                    "player_id": 1631257,
-                    "player_stats": [
-                        [
-                            1631257,
-                            "2023-24",
-                            "00",
-                            1610612745,
-                            "HOU",
-                            25.0,
-                            14,
-                            0,
-                            60.0,
-                            9,
-                            14,
-                            0.643,
-                            0,
-                            2,
-                            0.0,
-                            2,
-                            2,
-                            1.0,
-                            3,
-                            10,
-                            13,
-                            3,
-                            1,
-                            2,
-                            0,
-                            5,
-                            20
-                        ]
-                    ]
-                },
-                {
                     "player_name": "Aaron Holiday",
                     "player_id": 1628988,
                     "player_stats": [
@@ -28038,6 +28003,41 @@
                             53,
                             125,
                             514
+                        ]
+                    ]
+                },
+                {
+                    "player_name": "Jermaine Samuels Jr.",
+                    "player_id": 1631257,
+                    "player_stats": [
+                        [
+                            1631257,
+                            "2023-24",
+                            "00",
+                            1610612745,
+                            "HOU",
+                            25.0,
+                            14,
+                            0,
+                            60.0,
+                            9,
+                            14,
+                            0.643,
+                            0,
+                            2,
+                            0.0,
+                            2,
+                            2,
+                            1.0,
+                            3,
+                            10,
+                            13,
+                            3,
+                            1,
+                            2,
+                            0,
+                            5,
+                            20
                         ]
                     ]
                 },
@@ -85366,7 +85366,7 @@
                     ]
                 },
                 {
-                    "player_name": "D.J. Carton",
+                    "player_name": "DJ Carton",
                     "player_id": 1630618,
                     "player_stats": [
                         [
@@ -93662,7 +93662,7 @@
                     ]
                 },
                 {
-                    "player_name": "GG Jackson",
+                    "player_name": "GG Jackson II",
                     "player_id": 1641713,
                     "player_stats": [
                         [
@@ -100075,7 +100075,7 @@
                     ]
                 },
                 {
-                    "player_name": "Davis Bertans",
+                    "player_name": "D\u0101vis Bert\u0101ns",
                     "player_id": 202722,
                     "player_stats": [
                         [

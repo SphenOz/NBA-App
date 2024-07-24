@@ -1,18 +1,27 @@
 table {
     border-collapse: collapse;
-    border: 1px solid black;
+    border-spacing: 3px;
+    width: 100%;
+    table-layout: fixed;
   }
   
-  th, td {
-    padding: 8px;
+  th{
+    padding: 5px;
+    border: 0px solid white;
+    
+  }
+  td{
+    padding: 5px;
+    border-radius: 3px;
+    border-bottom: 1px white solid;
+    border-left: 1px white solid;
   }
 .table_header{
-    background-color: rgb(255, 146, 14);
+    background-color: rgb(14, 175, 255);
 }
 .t-table{
   overflow-y: auto;
-  height: 40vh;
-  width: fit-content;
+  height: auto;
+  width: 95%;
   border-radius: 10px;
-  border: 1px solid black;
 }

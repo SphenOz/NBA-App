@@ -2,6 +2,7 @@ import numpy as np
 from nba_api.stats.endpoints import playercareerstats, commonteamroster
 from nba_api.stats.static import players, teams
 import json
+import asyncio
 player_dict = ""
 team_dict = teams.find_team_by_abbreviation("GSW")
 
@@ -61,6 +62,7 @@ def get_players(team_input="Atlanta Hawks"):
     
 
 def updateJson():
+    t = 1
     team_dict = {}
     team_list = teams.get_teams()
     for t in team_list:
@@ -77,10 +79,10 @@ def updateJson():
                 "player_id": p[14],
                 "player_stats": playercareerstats.PlayerCareerStats(player_id=p[14]).get_dict()["resultSets"][0]["rowSet"]
             }
-            time.sleep(1)
+            time.sleep(.5)
             player_list.append(player_dict)
         jsondict["players"] = [player_list]
-        print("--------------\n\n\n", jsondict)
+        print("--------------\n\n\n Team:", t)
         team_dict[jsondict["team_name"]] = jsondict
     filename = 'team_data.json'
     with open(filename, 'w') as file:
@@ -93,8 +95,9 @@ def updateJson():
             "player_name" : p["full_name"],
             "player_stats" : playercareerstats.PlayerCareerStats(player_id=p["id"]).get_dict()["resultSets"][0]["rowSet"],
         }
-        time.sleep(.9)
+        time.sleep(.5)
         player_dic[p["id"]] = p_dict
     filename = 'player_data.json'
     with open(filename, 'w') as file:
          json.dump(player_dic, file, indent = 4)
+    print("DONE")

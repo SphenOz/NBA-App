@@ -16,6 +16,7 @@ player_dict = players.get_active_players()
 userinput = "a"
 app.app_context().push()
 db.create_all()
+#updateJson()
 
 @app.route("/api/home/<username>", methods=['GET'])
 @jwt_required()
@@ -73,7 +74,7 @@ def signup():
         return "Gods blunder"
     return "failed"
 
-@app.route("/api/set_team", methods=['POST'])
+@app.route("/api/set_team", methods=['POST', 'PUT'])
 @jwt_required()
 def set_team():
     token = request.headers.get('Authorization').split(" ")[1]
@@ -89,6 +90,15 @@ def set_team():
         print("For user.. ", user.username)
         print("Setting team...", user.team)
         db.session.commit()
+        return team
+    if(request.method =='PUT'):
+        team = ''
+        user = db.session.scalar(
+            sa.select(User).where(User.username==current_user)
+        )
+        user.set_team(team)
+        db.session.commit()
+        print("confirmed")
         return team
     return "error"
     

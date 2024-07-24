@@ -10,9 +10,12 @@
     background-color: rgba(126, 195, 255);
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 .Navbar{
+    margin-top: 1.5em;
     margin-right: 20px;
+    justify-content: center;
 }
 .Navbar:hover{
     color: black;

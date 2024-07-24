@@ -27,7 +27,7 @@ const Profile: React.FC<Props> = ({ team }) => {
         return "LOADING";
     }
     if (!array.length || !array[1]) {
-        return <div>No player data available</div>;
+        return "LOADING";
     }
     return(
         <div className="profile-container">
