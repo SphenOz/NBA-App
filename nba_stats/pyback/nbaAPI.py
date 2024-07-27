@@ -6,16 +6,18 @@ import asyncio
 player_dict = ""
 team_dict = teams.find_team_by_abbreviation("GSW")
 
+#change this to use json
 def search_player(user_input = "lebron james"):
     lowered = user_input
     print(lowered)
-    ab = []
     try:
         player = players.find_players_by_full_name(lowered)[0]
         playerid = str(player['id'])
         playerstats = playercareerstats.PlayerCareerStats(player_id=playerid)
-        playerdf = playerstats.get_data_frames()[0]
-        test = playerstats.get_dict()["resultSets"][0]["rowSet"]
+        f = open('player_data.json')
+        p_dict = json.load(f)
+        test = [p_dict[playerid]['player_name']]
+        test.append(playerstats.get_dict()["resultSets"][0]["rowSet"])
         #print(playerstats.get_dict()["resultSets"][0]["headers"])
         return test
     except IndexError:

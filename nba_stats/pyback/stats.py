@@ -106,6 +106,7 @@ def set_team():
 
 @app.route("/api/stats", methods=['GET'])
 def get_player(user_input = "lebron james", season = -1):
+    print('method: GET, route: /api/stats, nba_api method: search_player')
     if(request.method == 'GET'):
         user_input=request.args.get('name')
         # season = int(request.args.get('season'))
