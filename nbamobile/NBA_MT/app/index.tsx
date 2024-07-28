@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function Index() {
 
   const [playerName, setPlayerName] = useState<String>()
-  const [playerArray, setPlayerArray] = useState<any>()
+  const [playerArray, setPlayerArray] = useState<any>([])
   const [latestSeason, setlatestSeason] = useState<Array<any>>([])
 
   const dothing: any = async () => {
@@ -21,18 +21,18 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.playerdisplay}>
-          <Text>{playerName}</Text>
+          <Text style={{fontFamily: 'sans-serif-medium', fontSize: 30, color: 'white'}}>{playerArray[0]}</Text>
           <Image source={{
             uri: `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${latestSeason[0]}.png`
           }}
-          style = {{width: 200, height: 200, marginTop: 30}}/>
+          style = {{width: 260, height: 220, marginTop: 30, marginBottom: 20, backgroundColor: 'white', borderWidth: 3, borderColor: '#898ECD'}}/>
           <View style={styles.playerstats}>
-            <Text style={{borderColor: 'black', borderWidth: 2, fontSize: 30, margin: '5%', width: '35%', height: '100%', textAlign: 'center'}}>MPG</Text>
-            <Text style={{borderColor: 'black', borderWidth: 2, fontSize: 30, margin: '5%', width: '35%', height: '100%', textAlign: 'center'}}>PPG</Text>
+            <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '5%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>MPG{"\n"}{(Number(latestSeason[8])/Number(latestSeason[6])).toFixed(0)}</Text>
+            <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '5%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>PPG{"\n"}{(Number(latestSeason[26])/Number(latestSeason[6])).toFixed(2)}</Text>
           </View>
           <View style={styles.playerstats}>
-            <Text style={{borderColor: 'black', borderWidth: 2, fontSize: 30, margin: '5%', width: '35%', height: '100%', textAlign: 'center'}}>APG</Text>
-            <Text style={{borderColor: 'black', borderWidth: 2, fontSize: 30, margin: '5%', width: '35%', height: '100%', textAlign: 'center'}}>RPG</Text>
+            <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '5%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>RPG{"\n"}{(Number(latestSeason[20])/Number(latestSeason[6])).toFixed(2)}</Text>
+            <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '5%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>APG{"\n"}{(Number(latestSeason[21])/Number(latestSeason[6])).toFixed(2)}</Text>
           </View>
       </View>
       <View style={styles.footer}>
@@ -41,11 +41,10 @@ export default function Index() {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#222222',
+    backgroundColor: '#0A0312',
     alignItems: 'center',
   },
   textInput: {
@@ -59,24 +58,24 @@ const styles = StyleSheet.create({
   },
   playerdisplay: {
     flex: 5,
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
     width: '100%',
     marginTop: "5%",
     alignItems: 'center',
   },
   playerstats: {
-    margin: '5%',
+    margin: '0%',
     padding: '5%',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: 'pink'
+    // backgroundColor: 'pink',
   },
   footer: {
     flex: 1,
     width: '100%',
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     alignItems: 'center'
   }
 })
