@@ -1,9 +1,12 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, Platform, KeyboardAvoidingView } from "react-native";
+import { View, Text, StyleSheet, TextInput, Platform, KeyboardAvoidingView, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "./Auth/auth";
+import axiosInstance from "./Auth/authInterceptor";
 
 export default function Signup () {
-
+    const {login} = useAuth();
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [validPassowrd, setValidPassowrd] = useState<boolean>(false)
@@ -20,6 +23,33 @@ export default function Signup () {
         setValidPassowrd(passwordRegex.test(password))
     }, [password])
 
+    const handleSubmit = async (event: any) => {
+        event.preventDefault();
+        try{
+            await handleLogin();
+            setTimeout(() => {
+                console.log("success")
+            }, 500)
+        }catch (error:any) {
+            console.error(error)
+        }
+    }
+    const handleLogin = async () => {
+        try {
+            const response = await axiosInstance.get(`login?username=${username}&password=${password}`)
+            console.log("Login Successful", response.data.token)
+            login(response.data.token)
+            // login(response.data.token)
+            // await sleep(500)
+            // const userN = await axiosInstance.get(`/username`)
+            // setUsername(userN.data)
+            // Redirect or update state to reflect logged-in status
+        } catch (error: any) {
+            console.error('Login failed:', error);
+            throw error;
+        }
+    }
+
     return(
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView style={styles.signupbox}>
@@ -31,7 +61,7 @@ export default function Signup () {
                     maxLength={30}
                     onChangeText={text => setUsername(text)}>
                 </TextInput>
-                {validUsername ? null : 
+                {validUsername && username != "" ? null : 
                     <Text style={{marginLeft: 40, color: 'red', fontFamily: 'Roboto', fontSize: 15, fontWeight: 800, alignSelf: 'flex-start',}}>Username minimum length include 6, letters and numbers only</Text>}
                 <TextInput 
                     style={styles.textInput} 
@@ -43,6 +73,7 @@ export default function Signup () {
                 </TextInput>
                 {validPassowrd ? null : 
                     <Text style={{marginLeft: 40, color: 'red', fontFamily: 'Roboto', fontSize: 15, fontWeight: 800, alignSelf: 'flex-start',}}>Password must include 8-32 characters, 1 letter and 1 number required</Text>}
+                <Button title="Submit" onPress={(e) => handleSubmit(e)}></Button>
             </KeyboardAvoidingView>
         </SafeAreaView>
     )

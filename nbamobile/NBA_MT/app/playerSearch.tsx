@@ -14,7 +14,6 @@ export default function Playersearch({navigation} : {navigation: any}) {
 
   const dothing: any = async () => {
     const response = await axios.get(`http://10.0.2.2:8080/api/stats?name=${playerName}`)
-    console.log(response.data)
     const len = response.data[1].length-1
     setlatestSeason(response.data[1][len])
     setPlayerArray(response.data)
