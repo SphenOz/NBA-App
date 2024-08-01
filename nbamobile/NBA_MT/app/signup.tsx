@@ -15,11 +15,9 @@ export default function Signup () {
     const passwordRegex = /^(?=.*?[0-9])(?=.*?[A-Za-z]).{8,32}$/
 
     useEffect(() => {
-        console.log(userRegex.test(username), username)
         setvalidUsername(userRegex.test(username))
     }, [username])
     useEffect(() => {
-        console.log(passwordRegex.test(password), password)
         setValidPassowrd(passwordRegex.test(password))
     }, [password])
 

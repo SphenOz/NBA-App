@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'pink',
   },
   footer: {
-    flex: 1,
+    flex: .8,
     width: '100%',
     backgroundColor: 'red',
     alignItems: 'center'
