@@ -2,9 +2,13 @@ import { SafeAreaView, StyleSheet, Text, TextInput, View, Image, Touchable, Touc
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
-import team_logos from './images'
+import team_logos from '../images'
 import { TouchableHighlight } from "react-native-gesture-handler";
-export default function Home() {
+import axiosInstance from "../Auth/authInterceptor";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../Auth/auth";
+
+export default function TeamSelect({ navigation }: any) {
 
     const teams = [
         { label: "Atlanta Hawks", value: 'ATL' },
@@ -38,10 +42,26 @@ export default function Home() {
         { label: "Utah Jazz", value: 'UTA' },
         { label: "Washington Wizards", value: 'WAS' }
     ];
-    const [team, setTeam] = useState<string>("")
+    const {team, setTeam} = useAuth();
     useEffect(() => {
         console.log(team)
     },[team])
+    
+    const postTeam = async(key: string) =>{
+        try{
+            console.log("Setting Team: ", key)
+            //const response = await axiosInstance.post(`/set_team?team=${key}`)
+            //setTeam(response.data)
+            //AsyncStorage.setItem('team',response.data)
+            navigation.navigate('Home')
+        }
+        catch{
+
+        }
+        finally{
+            
+        }
+    }
 
     
 
@@ -58,7 +78,7 @@ export default function Home() {
                     search maxHeight={300}
                     placeholder={team ? team : "Select a team"}>
                 </Dropdown>
-                <TouchableOpacity onPress={() => console.log("COCk")}>
+                <TouchableOpacity onPress={() => postTeam(team)}>
                     <Image style={{width: 300, height: 300, alignSelf:"center"}} source={team_logos[team]}/>
                 </TouchableOpacity>
             </View>

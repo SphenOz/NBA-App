@@ -50,6 +50,7 @@ import time
 def get_players(team_input="Atlanta Hawks"):
     f = open('team_data.json')
     team_dict = json.load(f)
+    team_input = search_team(team_input)
     player_of_team = team_dict[team_input]["players"]
     format = []
     for p in player_of_team[0]:

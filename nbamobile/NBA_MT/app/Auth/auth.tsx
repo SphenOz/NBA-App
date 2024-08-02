@@ -5,7 +5,9 @@ import { ReactNode, useContext, useState } from 'react';
 interface AuthContextType {
     token: string | null;
     isLoggedIn: boolean;
+    team: string;
     login: (token: string) => void;
+    setTeam: (team: string) => void;
 }
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -13,6 +15,7 @@ const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [token, setToken] = useState<string | null>("")
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => !!AsyncStorage.getItem('token'));
+    const [team, setTeam] = useState<string>("")
 
     const getAuthState = async () => {
         try{
@@ -34,7 +37,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     return (
-        <AuthContext.Provider value={{token, isLoggedIn, login}}>
+        <AuthContext.Provider value={{token, isLoggedIn, login, team, setTeam}}>
             {children}
         </AuthContext.Provider>
     )

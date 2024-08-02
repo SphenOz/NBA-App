@@ -2,8 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TextInput, Platform, KeyboardAvoidingView, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "./Auth/auth";
-import axiosInstance from "./Auth/authInterceptor";
+import { useAuth } from "../Auth/auth";
+import axiosInstance from "../Auth/authInterceptor";
 
 export default function Signup () {
     const {login} = useAuth();
