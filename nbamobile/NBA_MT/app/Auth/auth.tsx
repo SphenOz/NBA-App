@@ -7,6 +7,7 @@ interface AuthContextType {
     isLoggedIn: boolean;
     team: string;
     login: (token: string) => void;
+    logout: () => void;
     setTeam: (team: string) => void;
 }
 
@@ -35,9 +36,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.log("Token failed to be stored")
         }
     };
+    const logout = async() => {
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('team')
+        setToken(null)
+        console.log(token, "Removed")
+        setIsLoggedIn(false);
+    };
 
     return (
-        <AuthContext.Provider value={{token, isLoggedIn, login, team, setTeam}}>
+        <AuthContext.Provider value={{token, isLoggedIn, login, team, setTeam, logout}}>
             {children}
         </AuthContext.Provider>
     )

@@ -1,7 +1,7 @@
 import '../gesture-handler'
 import { SafeAreaView, StyleSheet, Text, TextInput, View, Image } from "react-native";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from '../Auth/auth';
 
 type Navi = {
@@ -12,7 +12,7 @@ export default function Playersearch({navigation} : {navigation: any}) {
   const [playerName, setPlayerName] = useState<string>()
   const [playerArray, setPlayerArray] = useState<any>([])
   const [latestSeason, setlatestSeason] = useState<Array<any>>([])
-  const {team} = useAuth();
+  const {team, isLoggedIn} = useAuth();
 
   const dothing: any = async () => {
     const response = await axios.get(`http://10.0.2.2:8080/api/stats?name=${playerName}`)
