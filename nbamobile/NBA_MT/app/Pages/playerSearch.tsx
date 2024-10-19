@@ -1,5 +1,5 @@
 import '../gesture-handler'
-import { SafeAreaView, StyleSheet, Text, TextInput, View, Image } from "react-native";
+import { SafeAreaView, StyleSheet, Text, TextInput, View, Image, Button } from "react-native";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from '../Auth/auth';
@@ -15,6 +15,7 @@ export default function Playersearch({navigation} : {navigation: any}) {
   const {team, isLoggedIn} = useAuth();
 
   const dothing: any = async () => {
+    console.log("hi")
     const response = await axios.get(`http://10.0.2.2:8080/api/stats?name=${playerName}`)
     const len = response.data[1].length-1
     setlatestSeason(response.data[1][len])
@@ -42,6 +43,7 @@ export default function Playersearch({navigation} : {navigation: any}) {
       </View>
       <View style={styles.footer}>
         <TextInput style={styles.textInput} onChangeText={text => setPlayerName(text)} onSubmitEditing={() => dothing()}>{team}</TextInput>
+        <Button title="Submit" onPress={(e) => dothing(e)}></Button>
       </View>
     </SafeAreaView>
   );

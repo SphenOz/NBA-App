@@ -24,6 +24,11 @@ export default function Signup () {
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         try{
+            const response = await axiosInstance.post(`signup?username=${username}&password=${password}`)
+            console.log(response.data)
+            setTimeout(() => {
+                
+            }, 1000)
             await handleLogin();
             setTimeout(() => {
                 console.log("success")

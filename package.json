@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "expo": "^51.0.22",
-    "react-native": "^0.74.3"
+    "react-native": "^0.74.3",
+    "typescript": "~5.3.3",
+    "@types/react": "~18.2.79"
   }
 }
