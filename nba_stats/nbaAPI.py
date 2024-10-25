@@ -65,12 +65,12 @@ def get_players(team_input="Atlanta Hawks"):
     return format
     
 
-def updateJson():
+async def updateJson():
     t = 1
     team_dict = {}
     team_list = teams.get_teams()
     for t in team_list:
-        print(t)
+        #print(t)
         jsondict = {
             "team_name": t["full_name"],
             "team_id": t["id"]
@@ -83,23 +83,24 @@ def updateJson():
                 "player_id": p[14],
                 "player_stats": playercareerstats.PlayerCareerStats(player_id=p[14]).get_dict()["resultSets"][0]["rowSet"]
             }
-            time.sleep(.5)
+            await asyncio.sleep(0.5)
             player_list.append(player_dict)
         jsondict["players"] = [player_list]
-        print("--------------\n\n\n Team:", t)
+        #print("--------------\n\n")
         team_dict[jsondict["team_name"]] = jsondict
     filename = 'team_data.json'
     with open(filename, 'w') as file:
         json.dump(team_dict, file, indent = 4)
+
     player_col = players.get_active_players()
-    print(player_col)
     player_dic = {}
     for p in player_col:
         p_dict = {
             "player_name" : p["full_name"],
             "player_stats" : playercareerstats.PlayerCareerStats(player_id=p["id"]).get_dict()["resultSets"][0]["rowSet"],
         }
-        time.sleep(.5)
+        #print(p)
+        await asyncio.sleep(0.5)
         player_dic[p["id"]] = p_dict
     filename = 'player_data.json'
     with open(filename, 'w') as file:

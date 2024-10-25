@@ -24,24 +24,34 @@ export default function Signup () {
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         try{
-            const response = await axiosInstance.post(`signup?username=${username}&password=${password}`)
+            const response = await axiosInstance.post(`signup`,
+                {
+                    user_name: username,
+                    password: password
+                }
+            );
             console.log(response.data)
             setTimeout(() => {
                 
             }, 1000)
-            await handleLogin();
+            /*await handleLogin();
             setTimeout(() => {
                 console.log("success")
-            }, 500)
+            }, 500)*/
         }catch (error:any) {
             console.error(error)
         }
     }
-    const handleLogin = async () => {
+    const handleLogin = async (event: any) => {
         try {
-            const response = await axiosInstance.get(`login?username=${username}&password=${password}`)
-            console.log("Login Successful", response.data.token)
-            login(response.data.token)
+            const response = await axiosInstance.post(`login`,
+                {
+                    user_name: username,
+                    password: password
+                }
+            );
+            console.log("Login Successful: ", response.data.access_token)
+            login(response.data.access_token)
             // login(response.data.token)
             // await sleep(500)
             // const userN = await axiosInstance.get(`/username`)
@@ -76,7 +86,8 @@ export default function Signup () {
                 </TextInput>
                 {validPassowrd ? null : 
                     <Text style={{marginLeft: 40, color: 'red', fontFamily: 'Roboto', fontSize: 15, fontWeight: 800, alignSelf: 'flex-start',}}>Password must include 8-32 characters, 1 letter and 1 number required</Text>}
-                <Button title="Submit" onPress={(e) => handleSubmit(e)}></Button>
+                <Button title="Signup" onPress={(e) => handleSubmit(e)}></Button>
+                <Button title="Login"  onPress={(e) => handleLogin(e)}></Button>
             </KeyboardAvoidingView>
         </SafeAreaView>
     )
@@ -95,7 +106,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 7,
         margin: 10,
-        marginTop: 40,
+        marginTop: 30,
         width: '70%',
         fontSize: 25
       },
