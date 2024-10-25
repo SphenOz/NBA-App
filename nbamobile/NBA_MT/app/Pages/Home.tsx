@@ -31,7 +31,7 @@ export default function Home({navigation} : {navigation: any}) {
     }, [team])
 
     const getPlayers = async() => {
-        const response = await axiosInstance.get(`/playersOfTeam?team=${team}`)
+        const response = await axiosInstance.get(`/playersOfTeam?teamToSearch=${team}`)
         console.log(response.data);
         setTeamPlayers(response.data)
     }

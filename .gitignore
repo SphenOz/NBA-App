@@ -1,2 +1,5 @@
 node_modules/
 node_modules
+stats_backend/
+stats_backend/Lib
+nba_stats/database.py

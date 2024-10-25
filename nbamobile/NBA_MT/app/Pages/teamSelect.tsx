@@ -42,17 +42,17 @@ export default function TeamSelect({ navigation }: any) {
         { label: "Utah Jazz", value: 'UTA' },
         { label: "Washington Wizards", value: 'WAS' }
     ];
-    const {team, setTeam} = useAuth();
+    const {team, setTeam, token} = useAuth();
     useEffect(() => {
         console.log(team)
     },[team])
     
     const postTeam = async(key: string) =>{
         try{
-            console.log("Setting Team: ", key)
-            //const response = await axiosInstance.post(`/set_team?team=${key}`)
-            //setTeam(response.data)
-            //AsyncStorage.setItem('team',response.data)
+            console.log("Setting Team: ", token)
+            const response = await axiosInstance.put(`/set_team?team=${key}`)
+            setTeam(response.data)
+            AsyncStorage.setItem('team',response.data)
             navigation.navigate('Home')
         }
         catch{

@@ -1,114 +1,164 @@
-# bot.py
-import os
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from pydantic import BaseModel
+import models as models
+from database import engine, SessionLocal
+from typing import Annotated
+from sqlalchemy.orm import Session
+from nbaAPI import search_player, search_team, get_players, updateJson
+import asyncio
+import jwt
+from jwt.exceptions import InvalidTokenError
+from passlib.context import CryptContext
+from datetime import datetime, timedelta, timezone
 
-import discord
-from dotenv import load_dotenv
-from discord import Intents, Client, Message, Embed, app_commands
-from stats import get_player
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-print(TOKEN)
+async def lifespan(app):
+    asyncio.create_task(update_players_team())
+    yield
+    print("goodnight")
 
-intents: Intents = Intents.default()
-intents.message_content = True #NOQA
-client: Client = Client(intents=intents)
-tree = app_commands.CommandTree(client)
 
-@tree.command(
-        name="greetings",
-        description="HI",
-        guild=discord.Object(id=1089098338894352436)
-)
-async def greetings(interaction: discord.Interaction):
-    await interaction.response.send_message("wassup")
-    
-@tree.command(
-        name="echo",
-        description="re",
-        guild=discord.Object(id=1089098338894352436)
-)
-async def echo(interaction: discord.Interaction, word: str):
-    await interaction.response.send_message(f'You said {word}')
+app = FastAPI(lifespan=lifespan)
+models.Base.metadata.create_all(bind=engine)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+TOKEN_EXPIRE_MINUTES = 60
+ALGORITHM = "HS256"
+KEY_ENCRYPT = "d13a20db290fd63a29752e7c1b1d7e04a43d538ded7507d8013b8aafb66f621d"
 
-@tree.command(
-        name="findplayer",
-        description="Gives regular season stats of given player",
-        guild=discord.Object(id=1089098338894352436)
-)
-async def send_message(interaction: discord.Interaction, user_message: str) -> None:
-    if not user_message:
-        print('(Message was empty, check intents)')
-        return
 
+class UserTeam(BaseModel):
+    email: str
+
+class UserBase (BaseModel):
+    user_name: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: str | None = None
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+async def update_players_team():
+    while True:
+        #await updateJson()
+        await asyncio.sleep(28800)
+
+def get_db():
+    db = SessionLocal()
     try:
-        statList = get_player(user_message)
-        print(f'Seasons Played: {statList[13]}')
-        embedV = create_player_embed(statList=statList, name=user_message)
-        await interaction.response.send_message(embed=embedV, view=playerMenu(user_message, statList[13]-1))
-    except Exception as e:
-        if str(e) == "Player Not Found":
-            await interaction.response.send(content="y")
+        yield db
+    finally:
+        db.close()
+db_dependency = Annotated[Session, Depends(get_db)]
 
-class playerMenu(discord.ui.View):
-    def __init__(self, player_name, seasons_played):
-        self.player_name = player_name
-        self.current_season = seasons_played
-        self.seasons_played = seasons_played
-        super().__init__(timeout=None)
+def get_user(username: str, db: db_dependency):
+    user = db.query(models.Users).filter(models.Users.user_name == username).first()
+    return user
+
+def verify_passwrd(password, hashed_pwd):
+    return pwd_context.verify(password, hashed_pwd)
+
+def auth_user(db: db_dependency, username: str, password: str):
+    user = get_user(db=db, username=username)
+    if not user:
+        return False
+    if not verify_passwrd(password=password, hashed_pwd=user.password):
+        return False
+    return user
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encode_jwt = jwt.encode(to_encode, KEY_ENCRYPT, algorithm=ALGORITHM)
+    return encode_jwt
+
+
+#Checks if Username is taken, if not Creates an Entry in Database given the username and the hashed password
+@app.post("/api/signup")
+async def signup(user: UserBase, db: db_dependency):
+
+    exist_user = db.query(models.Users).filter(models.Users.user_name == user.user_name).first()
+    if exist_user:
+        raise HTTPException(status_code=400, detail="Username already exists")
+
+    hashpwd = pwd_context.hash(user.password)
+    db_user = models.Users(user_name=user.user_name, password=hashpwd)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+
+    return {"user_name: ": db_user.user_name}
+
+#This will return a session token that expires within an hour
+@app.post("/api/login")
+async def login(user: UserBase, db: db_dependency) -> Token:
+    a_user = auth_user(db=db, username=user.user_name, password=user.password) #Authenticate the existance of the user by checking, for username entry & correct password
+    if not a_user:
+        raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid authentication credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": a_user.user_name}, expires_delta=access_token_expires
+    )
+    print(access_token)
+    return Token(access_token=access_token, token_type="bearer")
+
+async def get_current_user(db: db_dependency, token: Annotated[str, Depends(oauth2_scheme)]):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid authentication credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload =  jwt.decode(token, KEY_ENCRYPT, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        print(username)
+        if username is None:
+            raise credentials_exception
+            #do something
+        token_data = TokenData(username=username)
+    except InvalidTokenError:
+        raise credentials_exception
+    user = get_user(db=db, username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+@app.get("/api/stats")
+def get_player(playername: str = "lebron james", season: int = -1):
+    print('method: GET, route: /api/stats, nba_api method: search_player', playername)
+    print(playername)
+    try:
+        return search_player(playername)
+    except:
+        raise IndexError
     
-    @discord.ui.button(label="Previous Season")
-    async def prevSeason(self,  interaction: discord.Interaction, button: discord.ui.Button,):
-        if(self.current_season!=0):
-            self.current_season -=1
-        a = get_player(self.player_name, self.current_season)
-        await interaction.response.edit_message(embed=create_player_embed(statList=a,name=self.player_name))
-    
-    @discord.ui.button(label="Next Season")
-    async def nextSeason(self,  interaction: discord.Interaction, button: discord.ui.Button,):
-        if(self.current_season < self.seasons_played):
-            self.current_season +=1
-        a = get_player(self.player_name, self.current_season)
-        await interaction.response.edit_message(embed=create_player_embed(statList=a,name=self.player_name))
+@app.put("/api/set_team")
+def set_team(db: db_dependency, team: str, user: Annotated[str, Depends(get_current_user)]):
+    user.team = team
+    db.commit()
+    db.refresh(user)
+    return user.team
 
-    
-def create_player_embed(statList, name: str):
-    embedV = Embed(title=name, color=0x00ff00, description="Basic Season Stats")
-    embedV.add_field(name="Season: ", value=statList[0], inline=True)
-    embedV.add_field(name="Team: ", value=statList[1], inline=True)
-    embedV.add_field(name="GP: \n", value=statList[2], inline=True)
-    embedV.add_field(name="FG%: ", value=str(round(statList[3]*100,2)) + "%", inline=True)
-    embedV.add_field(name="3PT%: ", value=str(round(statList[4]*100,2)) + "%    ", inline=True)
-    embedV.add_field(name="FT%: ", value=str(round(statList[5]*100,2)) + "%", inline=True)
-    embedV.add_field(name="PPG: ", value=round(statList[6]/statList[2],1), inline=True)
-    embedV.add_field(name="RPG: ", value=round(statList[7]/statList[2],1), inline=True)
-    embedV.add_field(name="APG: \n", value=round(statList[8]/statList[2],1), inline=True)
-    embedV.add_field(name="SPG: ", value=round(statList[9]/statList[2],1), inline=True)
-    embedV.add_field(name="BPG: ", value=round(statList[10]/statList[2],1), inline=True)
-    embedV.add_field(name="TOV: ", value=round(statList[11]/statList[2],1), inline=True)
-    urlI = f'https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{statList[12]}.png'
-    print(urlI)
-    embedV.set_image(url=urlI) 
-    return embedV
-
-@client.event
-async def on_ready() -> None:
-    await tree.sync(guild=discord.Object(id=1089098338894352436))
-    print(f'{client.user} is now live')
-
-@client.event
-async def on_message(message: Message) -> None:
-    if message.author == client.user:
-        return
-    
-    username = message.author
-    user_message = message.content
-    channel = message.channel
-
-    print(f'[{channel}] {username}: "{user_message}"')
-
-def main() -> None:
-    client.run(token=TOKEN)
-
-if __name__ == '__main__':
-    main()
+@app.get("/api/playersOfTeam")
+def getPlayers(teamToSearch: str, db: db_dependency, user: Annotated[str, Depends(get_current_user)]):
+    try:
+        listOfPlayers = get_players(teamToSearch)
+        return listOfPlayers
+    except IndexError:
+        raise IndexError("Player Not Found")

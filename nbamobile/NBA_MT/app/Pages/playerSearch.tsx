@@ -15,12 +15,11 @@ export default function Playersearch({navigation} : {navigation: any}) {
   const {team, isLoggedIn} = useAuth();
 
   const dothing: any = async () => {
-    console.log("hi")
-    const response = await axios.get(`http://10.0.2.2:8080/api/stats?name=${playerName}`)
+    console.log(playerName)
+    const response = await axios.get(`http://10.0.2.2:8000/api/stats?playername=${playerName}`)
     const len = response.data[1].length-1
     setlatestSeason(response.data[1][len])
     setPlayerArray(response.data)
-    setPlayerName(playerArray[0])
     console.log(latestSeason)
   }
 
