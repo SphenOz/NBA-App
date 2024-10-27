@@ -42,12 +42,13 @@ export default function TeamSelect({ navigation }: any) {
         { label: "Utah Jazz", value: 'UTA' },
         { label: "Washington Wizards", value: 'WAS' }
     ];
-    const {team, setTeam, token} = useAuth();
+    const {setTeam, token} = useAuth();
+    const [team, set_team] = useState<string>("");
     useEffect(() => {
         console.log(team)
     },[team])
     
-    const postTeam = async(key: string) =>{
+    const postTeam = async(key: string | undefined) =>{
         try{
             console.log("Setting Team: ", token)
             const response = await axiosInstance.put(`/set_team?team=${key}`)
@@ -72,7 +73,7 @@ export default function TeamSelect({ navigation }: any) {
                 {team ? <Text style={{color: 'white', fontWeight: 800, fontSize: 30, textAlign: 'center'}}>Press the Logo to confirm your selection</Text> : null}
             </View>
             <View style={styles.team_dropdown}>
-                <Dropdown data={teams} labelField={"label"} valueField={"value"} onChange={item => setTeam(item.value)}
+                <Dropdown data={teams} labelField={"label"} valueField={"value"} onChange={item => set_team(item.value)}
                     style={dropdown_styles.dropdown} placeholderStyle={dropdown_styles.placeholderStyle}
                     selectedTextStyle={dropdown_styles.selectedTextStyle} itemContainerStyle={dropdown_styles.itemContainerStyle}
                     search maxHeight={300}

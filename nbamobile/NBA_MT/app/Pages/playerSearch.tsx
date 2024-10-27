@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderWidth: 1,
     padding: 7,
-    margin: 10,
-    width: '50%',
+    margin: 5,
+    width: '60%',
     fontSize: 25
   },
   playerdisplay: {
@@ -79,9 +79,12 @@ const styles = StyleSheet.create({
     // backgroundColor: 'pink',
   },
   footer: {
-    flex: .8,
+    flex: .5,
     width: '100%',
-    backgroundColor: 'red',
-    alignItems: 'center'
+    backgroundColor: '#7C86F7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    padding: '3%'
   }
 })

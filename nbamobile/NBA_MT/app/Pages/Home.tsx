@@ -28,16 +28,20 @@ export default function Home({navigation} : {navigation: any}) {
         getPlayers()
         setlatestSeason([])
         setPlayerName("")
+        getGames()
     }, [team])
 
     const getPlayers = async() => {
         const response = await axiosInstance.get(`/playersOfTeam?teamToSearch=${team}`)
-        console.log(response.data);
         setTeamPlayers(response.data)
     }
     const setSelectedPlayer = (p_name: string, p_stats: any) => {
         setPlayerName(p_name)
         setlatestSeason(p_stats)
+    }
+    const getGames = async() => {
+      const response = await axiosInstance.get(`/team_games?team=${team}`)
+      console.log(response.data[0].GAME_DATE)
     }
 
     const logOff = () => {

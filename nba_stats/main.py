@@ -1,11 +1,12 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import models as models
 from database import engine, SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
-from nbaAPI import search_player, search_team, get_players, updateJson
+from nbaAPI import *
 import asyncio
 import jwt
 from jwt.exceptions import InvalidTokenError
@@ -27,6 +28,16 @@ TOKEN_EXPIRE_MINUTES = 60
 ALGORITHM = "HS256"
 KEY_ENCRYPT = "d13a20db290fd63a29752e7c1b1d7e04a43d538ded7507d8013b8aafb66f621d"
 
+# Define allowed origins (use ["*"] to allow all origins, though be careful with this in production)
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class UserTeam(BaseModel):
     email: str
@@ -48,7 +59,12 @@ async def root():
 
 async def update_players_team():
     while True:
-        #await updateJson()
+        await asyncio.gather(
+            updateJsongames(),
+            updateJsonplayers(),
+            updateJsonteam()
+        )
+        print("FINISHED ALL")
         await asyncio.sleep(28800)
 
 def get_db():
@@ -162,3 +178,10 @@ def getPlayers(teamToSearch: str, db: db_dependency, user: Annotated[str, Depend
         return listOfPlayers
     except IndexError:
         raise IndexError("Player Not Found")
+
+@app.get("/api/team_games")
+def team_games(db: db_dependency, team: str, user: Annotated[str, Depends(get_current_user)]):
+    try:
+        return get_team_games(team_input=team)
+    except IndexError:
+        raise IndexError("Team not Found")

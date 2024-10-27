@@ -1,11 +1,13 @@
 import numpy as np
 from nba_api.stats.endpoints import playercareerstats, commonteamroster
 from nba_api.stats.static import players, teams
+from nba_api.stats.endpoints import teamgamelog
+from nba_api.stats.endpoints.teamgamelogs import TeamGameLogs
 import json
 import asyncio
 player_dict = ""
+gamelogs = teamgamelog.TeamGameLog
 team_dict = teams.find_team_by_abbreviation("GSW")
-
 #change this to use json
 def search_player(user_input = "lebron james"):
     lowered = user_input
@@ -31,6 +33,12 @@ def search_team(team_input = "GSW"):
         team = teams.find_team_by_abbreviation(team_input)
         return team['full_name']
     
+def get_team_games(team_input = "Golden State Warriors"):
+    team = search_team(team_input=team_input)
+    f = open('team_gamelogs.json')
+    tg_dict = json.load(f)
+    tg_json = tg_dict[team]
+    return tg_json
 # def get_players(team_input = "GSW"):
 #         ab = []
 #         teamID = teams.find_teams_by_full_name(team_input)[0]["id"]
@@ -47,6 +55,8 @@ def search_team(team_input = "GSW"):
 #         return ae
 import time
 
+
+
 def get_players(team_input="Atlanta Hawks"):
     f = open('team_data.json')
     team_dict = json.load(f)
@@ -58,14 +68,43 @@ def get_players(team_input="Atlanta Hawks"):
         season = p["player_stats"]
         if(len(season) != 0):
             season = season[len(season)-1]
-            format.append([p["player_name"],season])
+            if(season[1] == "2024-25"):
+                format.append([p["player_name"],season])
     format.sort(key=lambda x: x[1][9], reverse=True)
     print(format)
     
     return format
-    
 
-async def updateJson():
+#def get_recent_game(team_input):
+
+    
+async def updateJsongames():
+    team_list = teams.get_teams()
+    all_logs = {}
+    for t in team_list:
+        await asyncio.sleep(0.5)
+        logs = gamelogs(team_id=t["id"], season='2024-25')
+        await asyncio.sleep(0.5)
+        headers = logs.get_dict()["resultSets"][0]['headers']
+        await asyncio.sleep(0.5)
+        a = logs.get_dict()["resultSets"][0]['rowSet']
+        array = []
+        for j in range(len(a)):
+            logdict = {}
+            for i in range(len(headers)):
+                logdict[headers[i]] = a[j][i]
+            array.append(logdict)
+        jsondict = {
+            "team_name": t["full_name"],
+            "team_logs": array
+        }
+        all_logs[jsondict["team_name"]] = jsondict["team_logs"]
+    filename = 'team_gamelogs.json'
+    with open(filename, 'w') as file:
+        json.dump(all_logs, file, indent = 4)
+    print("Finished updating gamelogs....\n")
+
+async def updateJsonteam():
     t = 1
     team_dict = {}
     team_list = teams.get_teams()
@@ -91,7 +130,9 @@ async def updateJson():
     filename = 'team_data.json'
     with open(filename, 'w') as file:
         json.dump(team_dict, file, indent = 4)
+    print("Finished update team_data....\n")
 
+async def updateJsonplayers():
     player_col = players.get_active_players()
     player_dic = {}
     for p in player_col:
@@ -105,4 +146,4 @@ async def updateJson():
     filename = 'player_data.json'
     with open(filename, 'w') as file:
          json.dump(player_dic, file, indent = 4)
-    print("DONE")
+    print("Finished update player_data....\n")

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ReactNode, useContext, useState } from 'react';
+import {jwtDecode} from 'jwt-decode';
 
 interface AuthContextType {
     token: string | null;
@@ -57,3 +58,15 @@ export const useAuth = (): AuthContextType => {
     }
     return context;
 };
+export const isTokenExpired = async (token: string) => {
+    try {
+        const { exp } = jwtDecode(token);
+        if (!exp) return true;
+        // Check if the token is expired
+        const now = Date.now().valueOf() / 1000; // convert to seconds
+        return exp < now;
+      } catch (error) {
+        console.error("Error decoding token", error);
+        return true; // Assume expired if there's an error
+      }
+}
