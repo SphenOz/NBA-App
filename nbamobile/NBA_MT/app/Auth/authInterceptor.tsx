@@ -9,23 +9,25 @@ const axiosInstance = axios.create({
 });
 
 // Add a request interceptor
-axiosInstance.interceptors.request.use(
-    async config => {
-        const token = await AsyncStorage.getItem('token');
-        console.log("Token: ", token);
-        if(token){
-            if(await isTokenExpired(token)){
-                console.warn("Expired token")
+export const axiosInterceptor = (logout: any) => {
+    axiosInstance.interceptors.request.use(
+        async config => {
+            const token = await AsyncStorage.getItem('token');
+            console.log("Token: ", token);
+            if(token){
+                if(await isTokenExpired(token)){
+                    console.warn("Expired token")
+                    logout();
+                }
+                else{
+                    config.headers['Authorization'] = `Bearer ${token}`;
+                }
             }
-            else{
-                config.headers['Authorization'] = `Bearer ${token}`;
-            }
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
         }
-        return config;
-    },
-    error => {
-        return Promise.reject(error);
-    }
-);
-
+    );
+}
 export default axiosInstance;

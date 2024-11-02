@@ -12,12 +12,12 @@ type Navi = {
   navigation: any
 }
 export default function Home({navigation} : {navigation: any}) {
-
     const [advanced, setAdvanced] = useState<boolean>(false);
     const [playerName, setPlayerName] = useState<string>()
     const [playerArray, setPlayerArray] = useState<any>([])
     const [latestSeason, setlatestSeason] = useState<Array<any>>([])
     const [teamPlayers, setTeamPlayers] = useState<any>([])
+    const [gameLogs, setGameLogs] = useState<any>([])
     const {team, logout} = useAuth();
 
     const t1Head= ['MPG','PPG','RPG','APG','SPG','BPG','TOV', 'PF']
@@ -41,12 +41,15 @@ export default function Home({navigation} : {navigation: any}) {
     }
     const getGames = async() => {
       const response = await axiosInstance.get(`/team_games?team=${team}`)
-      console.log(response.data[0].GAME_DATE)
+      setGameLogs(gameLogs)
     }
 
     const logOff = () => {
       logout()
       navigation.navigate("PlayerSearch")
+    }
+    const viewGames = () => {
+      navigation.navigate("Games")
     }
 
     const pGC = (index: number) => {
@@ -68,59 +71,61 @@ export default function Home({navigation} : {navigation: any}) {
                 {teamPlayers.map((player: any, key: any ) => (
                     <TouchableOpacity onPress={() => setSelectedPlayer(player[0],player[1]) }>
                         <Image source={{uri: `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${player[1][0]}.png`}} key={key}
-                        style = {{width: 130, height: 100, marginTop: 30, margin: 5, backgroundColor: 'white', borderWidth: 3, borderColor: '#898ECD'}}/>
+                        style = {{width: 130, height: 100, marginTop: 20, margin: 5, backgroundColor: 'white', borderWidth: 3, borderColor: '#898ECD'}}/>
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-            <View style={styles.playerdisplay}>
-                <Text style={{fontFamily: 'sans-serif-medium', fontSize: 30, color: 'white'}}>{playerName}</Text>
-                <Image source={{
-                    uri: `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${latestSeason[0]}.png`
-                }}
-                style = {{width: 230, height: 180, marginTop: 20, marginBottom: 20, backgroundColor: 'white', borderWidth: 3, borderColor: '#898ECD'}}/>
-                { advanced ?
-                <>
-                  <View style={styles.playerstats}>
-                      <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '2%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>MPG{"\n"}{(Number(latestSeason[8])/Number(latestSeason[6])).toFixed(0)}</Text>
-                      <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '2%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>PPG{"\n"}{(Number(latestSeason[26])/Number(latestSeason[6])).toFixed(1)}</Text>
-                  </View>
-                  <View style={styles.playerstats}>
-                      <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '2%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>RPG{"\n"}{(Number(latestSeason[20])/Number(latestSeason[6])).toFixed(1)}</Text>
-                      <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '2%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>APG{"\n"}{(Number(latestSeason[21])/Number(latestSeason[6])).toFixed(1)}</Text>
-                  </View>
-                </>
-                :
-                <View style={styles.a_playerstats}>
-                  <View style={styles.a_ps_table}>
-                    <Table style={{width: '85%'}} borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
-                      <Row data={t1Head} style={{backgroundColor: "#607DDB"}} textStyle={styles.a_ps_text} />
-                      <Rows data={t1Body} style={{backgroundColor: "#6B60DB"}} textStyle={styles.a_ps_text}/>
-                    </Table>
-                  </View>
-                  {/*Converts Totals to Per Game*/}
-                  <View style={styles.a_ps_table}>
-                    <Table style={{width: '85%'}} borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
-                      <Row data={t2Head} style={{backgroundColor: "#607DDB"}} textStyle={styles.a_ps_text} />
-                      <Rows data={t2Body} style={{backgroundColor: "#6B60DB"}} textStyle={styles.a_ps_text}/>
-                    </Table>
-                  </View>
-                </View>
-                
-                }
-                {/*['PLAYER_ID', 'SEASON_ID', 'LEAGUE_ID', 'TEAM_ID', 'TEAM_ABBREVIATION', 'PLAYER_AGE', 'GP', 'GS', 'MIN', 'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT', 'FTM', 'FTA', 'FT_PCT', 'OREB', 'DREB', 'REB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS']*/}
-            </View>
+              <View style={styles.playerdisplay}>
+                  <Text style={{fontFamily: 'sans-serif-medium', fontSize: 30, color: 'white'}}>{playerName}</Text>
+                  <Image source={{
+                      uri: `https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/${latestSeason[0]}.png`}}  
+                      style = {{width: 230, height: 180, marginTop: 20, marginBottom: 20, backgroundColor: 'white', borderWidth: 3, borderColor: '#898ECD'}}/>
+                  {advanced ?
+                    <>
+                      <View style={styles.playerstats}>
+                          <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '2%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>MPG{"\n"}{(Number(latestSeason[8])/Number(latestSeason[6])).toFixed(0)}</Text>
+                          <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '2%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>PPG{"\n"}{(Number(latestSeason[26])/Number(latestSeason[6])).toFixed(1)}</Text>
+                      </View>
+                      <View style={styles.playerstats}>
+                          <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '2%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>RPG{"\n"}{(Number(latestSeason[20])/Number(latestSeason[6])).toFixed(1)}</Text>
+                          <Text style={{textAlignVertical: 'center', borderColor: '#7C86F7', backgroundColor: 'black', borderWidth: 3, fontSize: 30, margin: '2%', width: '35%', height: '90%', textAlign: 'center', borderRadius: 10, color: 'white'}}>APG{"\n"}{(Number(latestSeason[21])/Number(latestSeason[6])).toFixed(1)}</Text>
+                      </View>
+                    </>
+                    :
+                    <View style={styles.a_playerstats}>
+                      <View style={styles.a_ps_table}>
+                        <Table style={{width: '85%'}} borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
+                          <Row data={t1Head} style={{backgroundColor: "#607DDB"}} textStyle={styles.a_ps_text} />
+                          <Rows data={t1Body} style={{backgroundColor: "#6B60DB"}} textStyle={styles.a_ps_text}/>
+                        </Table>
+                      </View>
+                      {/*Converts Totals to Per Game*/}
+                      <View style={styles.a_ps_table}>
+                        <Table style={{width: '85%'}} borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
+                          <Row data={t2Head} style={{backgroundColor: "#607DDB"}} textStyle={styles.a_ps_text} />
+                          <Rows data={t2Body} style={{backgroundColor: "#6B60DB"}} textStyle={styles.a_ps_text}/>
+                        </Table>
+                      </View>
+                    </View>
+                  }
+                  {/*['PLAYER_ID', 'SEASON_ID', 'LEAGUE_ID', 'TEAM_ID', 'TEAM_ABBREVIATION', 'PLAYER_AGE', 'GP', 'GS', 'MIN', 'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT', 'FTM', 'FTA', 'FT_PCT', 'OREB', 'DREB', 'REB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS']*/}
+              </View>
             <Button
               onPress={() => setAdvanced(!advanced)}
               title={advanced ? "Switch to Advanced Stats Display" : "Switch to Basic Stats Display"}
               color="#841584"
               accessibilityLabel="Learn more about this purple button"
-              />
+            />
             <View style={styles.footer}>
-              <Button  title="logout" onPress={() => logOff()}/>
+              <TouchableOpacity style={styles.button} onPress={() => logOff()}>
+                <Text style={styles.buttonText}>Logout</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => viewGames()}>
+                <Text style={styles.buttonText}>View Games</Text>
+              </TouchableOpacity>
             </View>
         </SafeAreaView>
     );
-    
 }
 
 const styles = StyleSheet.create({
@@ -132,6 +137,23 @@ const styles = StyleSheet.create({
   player_select: {
     flex: 1,
     // backgroundColor: 'white',
+  },
+  button:{
+    backgroundColor: '#007BFF', // Button color
+    paddingVertical: 10,        // Vertical padding
+    paddingHorizontal: 20,      // Horizontal padding
+    borderRadius: 5,            // Rounded corners
+    elevation: 2,                // Shadow for Android
+    shadowColor: '#000',         // Shadow color for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset for iOS
+    shadowOpacity: 0.3,         // Shadow opacity for iOS
+    shadowRadius: 4,            // Shadow radius for iOS
+    marginHorizontal: 5
+  },
+  buttonText: {
+    color: '#FFFFFF',           // Text color
+    fontSize: 16,               // Font size
+    textAlign: 'center',        // Center text
   },
   textInput: {
     backgroundColor: '#78C0E6',
@@ -177,10 +199,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   footer: {
-    flex: .3,
+    flex: .5,
     width: '100%',
-    backgroundColor: 'red',
+    backgroundColor: '#7C86F7',
     alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
     marginTop: 10
   }
 })
