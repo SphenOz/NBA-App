@@ -13,6 +13,8 @@ import { AuthProvider } from './Auth/authContext.tsx'
 import Login from './Pages/Login.tsx';
 import Layout from './Layout.tsx';
 import PlayerSearch from './Pages/PlayerSearch.tsx';
+import TeamCentral from './Pages/TeamCentral.tsx';
+import GameLog from './Pages/GameLog.tsx';
 
 const router = createBrowserRouter([
   {
@@ -36,9 +38,17 @@ const router = createBrowserRouter([
         element: <Login></Login>
       },
       {
-        path: "home/:username",
+        path: "home",
         element: <Home></Home>
       },
+      {
+        path: "teamcentral",
+        element: <TeamCentral></TeamCentral>
+      },
+      {
+        path: "game-logs",
+        element: <GameLog></GameLog>
+      }
     ]
   }
 ]);

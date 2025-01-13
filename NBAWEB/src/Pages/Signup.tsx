@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Signup.css"
 import axios from "axios";
 import Navbar from "../ReusableComponents/Navbar";
+import axiosInstance from "../Auth/axiosConfig";
 
 export default function Signup () {
     const userRef = React.useRef<HTMLInputElement>(null);
@@ -65,7 +66,13 @@ export default function Signup () {
             setErrMsg("Invalid Entry");
             return;
         }
-        const response = await axios.post(`http://localhost:8080/api/signup?username=${username}&password=${password}`)
+        console.log("Submitted")
+        const response = await axiosInstance.post(`signup`,
+            {
+                user_name: username,
+                password: password
+            }
+        );
         console.log(response.data)
         setTimeout(() => {
             navigate(`/login`)

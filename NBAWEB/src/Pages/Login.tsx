@@ -6,7 +6,7 @@ import { useAuth } from "../Auth/authContext";
 
 export default function Login () {
     const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
-    const { login } = useAuth();
+    const { login, team, setTeam } = useAuth();
     
     const userRef = React.useRef<HTMLInputElement>(null);
     const errRef = React.useRef<HTMLInputElement>(null);
@@ -47,7 +47,10 @@ export default function Login () {
         try{
             await handleLogin();
             setTimeout(() => {
-                navigate(`/home/${username}`)
+                if(team)
+                    navigate(`/teamcentral`)
+                else
+                    navigate(`/home`)
             }, 500)
         }catch (error:any) {
             console.error(error)
@@ -55,12 +58,20 @@ export default function Login () {
     }
     const handleLogin = async () => {
         try {
-            const response = await axiosInstance.get(`/login?username=${username}&password=${password}`)
-            console.log("Login Successful", response.data.token)
-            login(response.data.token)
+            const response = await axiosInstance.post(`/login`,
+                {
+                    user_name: username,
+                    password: password
+                }
+            );
+            console.log("Login Successful", response.data.access_token)
+            login(response.data.access_token)
             await sleep(500)
-            const userN = await axiosInstance.get(`/username`)
-            setUsername(userN.data)
+            const team_response = await axiosInstance.get(`/get_team`)
+            if(team_response.data){
+                console.log("Team: ", team_response.data)
+                setTeam(team_response.data)
+            }
             // Redirect or update state to reflect logged-in status
         } catch (error: any) {
             console.error('Login failed:', error);

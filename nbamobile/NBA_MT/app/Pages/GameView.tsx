@@ -7,6 +7,7 @@ import axiosInstance from '../Auth/authInterceptor';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import LS from './array-mapping';
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-reanimated-table';
+import team_logos from '../images'
 
 type Navi = {
   navigation: any
@@ -23,6 +24,7 @@ export default function GameView({navigation} : {navigation: any}) {
     const {team} = useAuth();
     const [gameLogs, setGameLogs] = useState<any>([])
     const [expanded, setExpanded] = useState<any>(null)
+    const [moreDetails, setMoreDetails] = useState<any>(false)
 
     useEffect(() => {
         getGames()
@@ -34,27 +36,46 @@ export default function GameView({navigation} : {navigation: any}) {
     }
     return(
         <SafeAreaView style={styles.container}>
-            <View style={styles.tabContainer}>
-                {gameLogs.map((game: any, key: any) => (
-                    <View style={styles.gameTab}>
-                        {gameLogs.length > 0 ? (<>
-                            <TouchableOpacity key={key} style={styles.details} onPress={() => setExpanded(expanded === key ? null : key)}>
-                                <Text style={{padding: 5, color: "white", textAlign: 'left', fontSize: 15}}>
-                                    {`${game.GAME_DATE} ${game.MATCHUP} ${game.WL} ${game.W} - ${game.L}`}
-                                </Text>
-                            </TouchableOpacity>
-                            {expanded === key && (
-                                <View>
-                                    <Text> HIIII </Text>
-                                </View>
+            {!moreDetails ? 
+                <View style={styles.tabContainer}>
+                    {gameLogs.map((game: any, key: any) => (
+                        <View style={[styles.gameTab, game.WL == "W" ? {backgroundColor: "green"} : {backgroundColor: "red"},expanded === key ? {height: "10%"}:{height: "7%"}]}>
+                            {gameLogs.length > 0 ? (<>
+                                <TouchableOpacity key={key} style={[styles.details]} 
+                                    onPress={() => setExpanded(expanded === key ? null : key)}>
+                                    <Text style={{padding: 5, color: "white", textAlign: 'left', fontSize: 15, width: "auto"}}>
+                                        {`${game.GAME_DATE} ${game.MATCHUP} ${game.WL} ${game.W} - ${game.L}`}
+                                    </Text>
+                                    <TouchableOpacity style={{padding: 5}} onPress={() => setMoreDetails(!moreDetails)}>
+                                        <Text style={{color: "blue"}}>More Details</Text>
+                                    </TouchableOpacity>
+                                </TouchableOpacity>
+                                {expanded === key && (
+                                    <View style={{}}>
+                                        <Text style={{color: "white", fontSize: 15, padding: 5}}>{`PTS: ${game.PTS} | REBS: ${game.REB} | ASTS: ${game.AST}`} </Text>
+                                    </View>
+                                )}
+                                </>
+                            ) : (
+                                <Text style={{ color: "white" }}>Loading...</Text> // Placeholder or message while loading
                             )}
-                            </>
-                        ) : (
-                            <Text style={{ color: "white" }}>Loading...</Text> // Placeholder or message while loading
-                        )}
-                    </View>
-                ))}
-            </View>
+                        </View>
+                    ))}
+                </View>
+                :<>
+                <View style={styles.header}>
+                    <TouchableOpacity style={{padding: 5, marginTop: 15}} onPress={() => setMoreDetails(!moreDetails)}>
+                        <Text style={{color: "blue"}}>Go Back</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.banner}>
+                    <Image style={{width: 200, height: 200}} source={team_logos[team]}/>
+                    <Text style={{fontSize: 30, color: "white"}}>VS</Text>
+                    <Image style={{width: 200, height: 200}} source={team_logos["BOS"]}/>
+                </View>
+                <View style={styles.stats}>
+                </View></>
+            }
             <View style={styles.footer}>
             </View>
         </SafeAreaView>
@@ -79,7 +100,8 @@ const styles = StyleSheet.create({
         margin: "1%",
     },
     details:{
-      
+      flexDirection: 'row',
+      marginTop: "1%"
     },
     buttonText: {
       color: '#FFFFFF',           // Text color
@@ -103,5 +125,24 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       flexDirection: 'row',
       marginTop: 10
+    },
+    header: {
+        flex: .5,
+        width: '100%',
+        backgroundColor: '#7C86F7',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        marginTop: 10
+    },
+    banner: {
+        flex: 2,
+        width: '100%',
+        justifyContent: 'flex-start',
+        flexDirection: 'row'
+    },
+    stats: {
+        flex: 3,
+        width: '100%',
     }
   })

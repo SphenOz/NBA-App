@@ -24,7 +24,7 @@ app = FastAPI(lifespan=lifespan)
 models.Base.metadata.create_all(bind=engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-TOKEN_EXPIRE_MINUTES = 60
+TOKEN_EXPIRE_HOURS = 24*7
 ALGORITHM = "HS256"
 KEY_ENCRYPT = "d13a20db290fd63a29752e7c1b1d7e04a43d538ded7507d8013b8aafb66f621d"
 
@@ -59,13 +59,18 @@ async def root():
 
 async def update_players_team():
     while True:
+        print("UPDATING")
+        
         await asyncio.gather(
-            updateJsongames(),
-            updateJsonplayers(),
-            updateJsonteam()
+            update_game_boxscore(),
+            updateJsongames()
         )
+        await asyncio.sleep(10)
+        await asyncio.gather(updateJsonplayers(), updateJsonCareerAvg())
+        await asyncio.sleep(10)
+        await asyncio.gather(updateJsonteam())
         print("FINISHED ALL")
-        await asyncio.sleep(28800)
+        await asyncio.sleep(60*20)
 
 def get_db():
     db = SessionLocal()
@@ -104,7 +109,11 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 #Checks if Username is taken, if not Creates an Entry in Database given the username and the hashed password
 @app.post("/api/signup")
 async def signup(user: UserBase, db: db_dependency):
-
+    print("method: POST, route: /api/signup, nba_api method: signup")
+    print(
+        "user_name: ", user.user_name, "\n",
+        "password: ", user.password
+    )
     exist_user = db.query(models.Users).filter(models.Users.user_name == user.user_name).first()
     if exist_user:
         raise HTTPException(status_code=400, detail="Username already exists")
@@ -127,7 +136,7 @@ async def login(user: UserBase, db: db_dependency) -> Token:
         detail="Invalid authentication credentials",
         headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(hours=TOKEN_EXPIRE_HOURS)
     access_token = create_access_token(
         data={"sub": a_user.user_name}, expires_delta=access_token_expires
     )
@@ -163,12 +172,24 @@ def get_player(playername: str = "lebron james", season: int = -1):
         return search_player(playername)
     except:
         raise IndexError
+
+@app.get("/api/career")
+def get_career(playername: str):
+    print('method: GET, route: /api/career, nba_api method: search_player', playername)
+    try:
+        return search_career(playername)
+    except:
+        raise IndexError
     
 @app.put("/api/set_team")
 def set_team(db: db_dependency, team: str, user: Annotated[str, Depends(get_current_user)]):
     user.team = team
     db.commit()
     db.refresh(user)
+    return user.team
+
+@app.get("/api/get_team")
+def get_team(db: db_dependency, user: Annotated[str, Depends(get_current_user)]):
     return user.team
 
 @app.get("/api/playersOfTeam")
@@ -178,6 +199,10 @@ def getPlayers(teamToSearch: str, db: db_dependency, user: Annotated[str, Depend
         return listOfPlayers
     except IndexError:
         raise IndexError("Player Not Found")
+    
+@app.get("/api/player_names")
+def player_names():
+    return get_player_names()
 
 @app.get("/api/team_games")
 def team_games(db: db_dependency, team: str, user: Annotated[str, Depends(get_current_user)]):
@@ -185,3 +210,10 @@ def team_games(db: db_dependency, team: str, user: Annotated[str, Depends(get_cu
         return get_team_games(team_input=team)
     except IndexError:
         raise IndexError("Team not Found")
+
+@app.get("/api/boxscore")
+def boxscore(db: db_dependency, game_id: str, user: Annotated[str, Depends(get_current_user)]):
+    try:
+        return get_boxscore(game_id)
+    except IndexError:
+        raise IndexError("Game not Found")

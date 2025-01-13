@@ -1,18 +1,29 @@
 table {
     border-collapse: collapse;
-    border-spacing: 3px;
+    border-spacing: 0 4px;
     width: 100%;
   }
   
   th{
-    padding: 5px;
-    border: 0px solid white;
-    
+    padding-right: 10px;
+    padding-top: 7px;
+    padding-left: 10px;
+    padding-bottom: 7px;
+    border-radius: 3px;
+  }
+  th:hover{
+    background-color: rgb(14, 175, 255);
   }
   td{
-    padding: 5px;
+    padding-right: 10px;
+    padding-top: 7px;
+    padding-left: 10px;
+    padding-bottom: 7px;
     border-radius: 3px;
-    border: 1px white solid;
+  }
+  tr{
+    border-bottom: 1px solid rgba(98, 197, 255, 0.705);
+    padding: 50px;
   }
 .table_header{
     background-color: rgb(14, 175, 255);
@@ -21,5 +32,7 @@ table {
   overflow-y: auto;
   height: auto;
   width: 95%;
-  border-radius: 10px;
+}
+.row .row-name:hover{
+  background-color: rgb(14, 175, 255);
 }

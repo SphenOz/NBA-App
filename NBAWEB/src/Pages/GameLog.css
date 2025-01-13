@@ -1,0 +1,57 @@
+.gameLog-container{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-self: flex-end;
+    position: fixed;
+}
+.gameTab{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px;
+    border: 1px solid #d3d3d3;
+    border-radius: 10px;
+    margin: 2px;
+    height: 80%;
+    background-color: green;
+}
+.gameTab:hover{
+    transform: scale(1.05);
+}
+.gameLog{
+    height: 80%;
+    overflow: auto;
+    border: solid 1px #d3d3d3;
+    border-radius: 3px;
+}
+.gameLog::-webkit-scrollbar{
+    display: none;
+}
+.team-games-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.boxscore-container{
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    min-height: 100%;
+    align-items: center;
+    padding-left: 5%;
+    padding-right: 5%;
+    max-height: fit-content;
+}
+.boxscore-header{
+    justify-content: space-between;
+    width: 75%;
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    height: 25%;
+    background-color: rgba(75, 186, 255, 0.642);
+    margin-bottom: 1%;
+    border: 5px solid rgb(226, 249, 255);
+}

@@ -13,6 +13,7 @@ interface AuthContextType {
     team: string | null;
     setUsername: (username: string | null) => void;
     setTeam: (team: string | null) => void;
+    editTeam: (team: string | null) => void;
     
 }
 interface DecodedToken {
@@ -30,7 +31,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => !!localStorage.getItem('token'));
     const [username, setUsername] = useState<string | null>(localStorage.getItem('username'));
-    const [team, setTeam] = useState<string | null>(localStorage.getItem('team'));
+    const [team, editTeam] = useState<string | null>(localStorage.getItem('team'));
 
     const login = (token: string) => {
         localStorage.setItem('token', token);
@@ -42,7 +43,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('tokenExpiration', expirationTime.toString())
         setToken(token);
         setIsLoggedIn(true);
+        setUsername(decoded.sub);
     };
+
+    const setTeam = (team: string | null) => {
+        if (team === null) {
+            localStorage.removeItem('team');
+            editTeam(null);
+        }
+        if (team)
+            localStorage.setItem('team', team);
+        editTeam(team);
+    } 
 
     const logout = () => {
         localStorage.removeItem('token');
@@ -50,7 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.removeItem('team')
         setUsername(null)
         setToken(null)
-        setTeam(null)
+        editTeam(null)
         console.log(token, "Removed")
         setIsLoggedIn(false);
     };
@@ -67,7 +79,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [token]);
 
     return (
-        <AuthContext.Provider value={{ token, isLoggedIn, login, logout, setToken, username, setUsername, team, setTeam}}>
+        <AuthContext.Provider value={{ token, isLoggedIn, login, logout, setToken, username, setUsername, team, editTeam, setTeam}}>
             {children}
         </AuthContext.Provider>
     );

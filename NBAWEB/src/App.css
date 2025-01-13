@@ -12,6 +12,8 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 7vh);
+  min-height: calc(100vh - 7vh);
   margin-top: 7vh;
+  max-height: fit-content;
+  padding-bottom: .5em;
 }

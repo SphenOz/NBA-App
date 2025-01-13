@@ -1,49 +1,57 @@
-import { Key, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from 'react'
+import { Key, JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useState, useEffect } from 'react'
 import './Table.css'
 
 export default function Card (prop : any) {
-    const a = prop.player
+    const columns = prop.columns
+    var rows = [...prop.rows]
+    const [sortedRows, setSortedRows] = useState([...prop.rows].reverse())
+    const [index, setIndex] = useState<number | null>();
+
+    useEffect(() => { setSortedRows([...prop.rows].reverse()) }, [prop.rows])
+
+
+    useEffect(() => {
+        if(index){
+            console.log(" This is the index: " + index + " and the value! " + sortedRows[0][index]) 
+            for(let i = 0; i< rows.length; i++){
+                for(let j = 0; j< rows.length - i - 1; j++){
+                    console.log("Comparing Season " + rows[j][0] + " " +  rows[j][index] + " and " + rows[j][0] + " " + rows[j+1][index])
+                    if(rows[j][index] > rows[j+1][index]){
+                        let temp = rows[j]
+                        rows[j] = rows[j+1]
+                        rows[j+1] = temp
+                    }
+                }
+            }
+        }    
+        setSortedRows(rows.reverse())
+        rows = [...prop.rows]
+        console.log("Sorted Rows: " + sortedRows)
+    }, [index])
+
+    const sortBy = (column: string) => {
+        setIndex(columns.indexOf(column))
+    }
     return(
         <>
             <div className='t-table'>
                 <table>
+                    {/* Table Header */}
                     <thead>
-                        <tr className='thead_row'>
-                            <th className='table_header'>SEASON </th>
-                            <th className='table_header'>TEAM </th>
-                            <th className='table_header'>GP </th>
-                            <th className='table_header'>MPG </th>
-                            <th className='table_header'>PPG </th>
-                            <th className='table_header'>RPG </th>
-                            <th className='table_header'>APG </th>
-                            <th className='table_header'>FG_PCT </th>
-                            <th className='table_header'>FG3_PCT </th>
-                            <th className='table_header'>FT_PCT </th>
-                            <th className='table_header'>SPG </th>
-                            <th className='table_header'>BPG </th>
-                            <th className='table_header'>TOV </th>
-                            <th className='table_header'>PF </th>
+                        <tr>
+                            {columns.map((column: any) => (
+                                <th onClick={() => sortBy(column)} className = 't-head' key={column}>{column}</th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {a.map((stats: (string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined)[], season: Key | null | undefined) => (
-                            <tr key={season} className='row'>
-                                <td>{stats[1]} </td>
-                                <td>{stats[4]} </td>
-                                <td>{stats[6]} </td>
-                                <td>{(Number(stats[8])/Number(stats[6])).toFixed(0)} </td>
-                                <td>{(Number(stats[26])/Number(stats[6])).toFixed(2)} </td>
-                                <td>{(Number(stats[20])/Number(stats[6])).toFixed(2)} </td>
-                                <td>{(Number(stats[21])/Number(stats[6])).toFixed(2)} </td>
-                                <td>{(Number(stats[11])*100).toFixed(1)}%</td>
-                                <td>{(Number(stats[14])*100).toFixed(1)}%</td>
-                                <td>{(Number(stats[17])*100).toFixed(1)}%</td>
-                                <td>{(Number(stats[22])/Number(stats[6])).toFixed(2)} </td>
-                                <td>{(Number(stats[23])/Number(stats[6])).toFixed(2)} </td>
-                                <td>{(Number(stats[24])/Number(stats[6])).toFixed(2)} </td>
-                                <td>{(Number(stats[25])/Number(stats[6])).toFixed(2)} </td>
-                            </tr>
-                        ))}
+                            {sortedRows.map((sorted_rows: any) => (
+                                <tr className='t-row'>
+                                    {sorted_rows.map((cell: any) => (
+                                        <td>{cell}</td>
+                                    ))}
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
             </div>

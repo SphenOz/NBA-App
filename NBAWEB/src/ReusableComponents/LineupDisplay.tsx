@@ -5,7 +5,9 @@ interface Player{
     player: any | null
  }
  
-const Strip: React.FC<Player> = ({ player }) => {
+export default function Strip ( prop: any ) {
+    const player = prop.player
+    const setPlayer = prop.setPlayer
     return(
         <>
             <div className='t-table'>
@@ -31,7 +33,7 @@ const Strip: React.FC<Player> = ({ player }) => {
                     <tbody>
                         {player.map((stats: any, season: Key | null | undefined) => (
                             <tr key={season} className='row'>
-                                <td>{stats[0]} </td>
+                                <td className="row-name" onClick={() => setPlayer(stats[0])}>{stats[0]} </td>
                                 <td>{stats[1][4]} </td>
                                 <td>{stats[1][6]} </td>
                                 <td>{(Number(stats[1][8])/Number(stats[1][6])).toFixed(0)} </td>
@@ -53,4 +55,3 @@ const Strip: React.FC<Player> = ({ player }) => {
         </>
     )
 }
-export default Strip
