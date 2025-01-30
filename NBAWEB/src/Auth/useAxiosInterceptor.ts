@@ -12,7 +12,7 @@ const useAxiosInterceptor = () => {
             (response) => response,
             (error) => {
                 if (error.message === 'Token expired' || error.response?.status === 401) {
-                    localStorage.removeItem('token'); // Optional: remove the token from storage
+                    localStorage.removeItem('token'); 
                     logout();
                     alert("Session expired, login")
                     navigate('/login'); // Redirect to login page

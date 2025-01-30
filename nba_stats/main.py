@@ -15,7 +15,8 @@ from datetime import datetime, timedelta, timezone
 
 
 async def lifespan(app):
-    asyncio.create_task(update_players_team())
+    asyncio.create_task(update_stats())
+    asyncio.create_task(get_scheduled_games())
     yield
     print("goodnight")
 
@@ -57,21 +58,24 @@ class TokenData(BaseModel):
 async def root():
     return {"message": "Hello World"}
 
-async def update_players_team():
+async def update_stats():
     while True:
-        print("UPDATING")
-        
-        await asyncio.gather(
-            update_game_boxscore(),
-            updateJsongames()
-        )
-        await asyncio.sleep(10)
-        await asyncio.gather(updateJsonplayers(), updateJsonCareerAvg())
-        await asyncio.sleep(10)
-        await asyncio.gather(updateJsonteam())
-        print("FINISHED ALL")
-        await asyncio.sleep(60*20)
+        print("beginning to update all stats")
 
+        await update_game_boxscore(),
+        await asyncio.sleep(3)
+        await updateJsongames()
+        await asyncio.sleep(3)
+        
+        # await asyncio.sleep(3)
+        await updateJsonCareerAvg()
+        await asyncio.sleep(3)
+        await updateJsonteam()
+        await asyncio.sleep(3)
+        await updateJsonplayers()
+        print("FINISHED ALL")
+        await asyncio.sleep(60*10)
+# update_game_boxscore() updateJsongames() updateJsonplayers() updateJsonCareerAvg() updateJsonteam()
 def get_db():
     db = SessionLocal()
     try:
@@ -217,3 +221,6 @@ def boxscore(db: db_dependency, game_id: str, user: Annotated[str, Depends(get_c
         return get_boxscore(game_id)
     except IndexError:
         raise IndexError("Game not Found")
+@app.get("/api/scheduled_games")
+def scheduled_games():
+    return get_schedule()

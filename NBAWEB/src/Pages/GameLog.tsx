@@ -3,6 +3,7 @@ import { useAuth } from "../Auth/authContext";
 import axiosInstance from "../Auth/axiosConfig";
 import "./GameLog.css"
 import Table from "../ReusableComponents/Table";
+import { get } from "http";
 
 export default function GameLog() {
     const {team} = useAuth();
@@ -38,8 +39,18 @@ export default function GameLog() {
     ]
 
     useEffect(() => {
+        if(gameLogs.length > 0){
+            setTimeout(() => {
+                fetchFullDetails(null,gameLogs[0])
+            }, 1000)
+        }
+    },[gameLogs])
+
+    useEffect(() => {
+        let j = 0
         getGames()
-    },[team])
+        console.log(j)
+    },[])
     const getGames = async() => {
         const response = await axiosInstance.get(`/team_games`, {
                 params: {
@@ -61,17 +72,18 @@ export default function GameLog() {
         setExpanded(expanded === key ? null : key)
         setDisabled(true)
         setCurrentGame(game)
-        console.log(game.Game_ID)
-        const response = await axiosInstance.get(`/boxscore`, {
-            params: {
-                game_id: game.Game_ID
-            }
-        })
-        setTimeout(() => {
-            setDisabled(false);
-            console.log(response.data)
-            setBoxScore(response.data)
-        }, 2000)
+        if(game.Game_ID){
+            console.log(game.Game_ID)
+            const response = await axiosInstance.get(`/boxscore`, {
+                params: {
+                    game_id: game.Game_ID
+                }
+            })
+            setTimeout(() => {
+                setDisabled(false);
+                setBoxScore(response.data)
+            }, 500)
+        }
         
     }
 
@@ -107,14 +119,14 @@ export default function GameLog() {
             <div className="boxscore-container">
                 <div className="boxscore-header">
                     <div style={{alignItems: 'center', display: 'flex', justifyContent: 'center', marginLeft: '5%'}}>
-                        <img src={`https://cdn.nba.com/logos/nba/${currentGame.Team_ID}/primary/L/logo.svg`} style={{width: 200, height: 200}}/>
-                        <span style={{fontSize: 45}}>{currentGame.PTS}</span>
+                        <img src={`https://cdn.nba.com/logos/nba/${currentGame.Team_ID}/primary/L/logo.svg`} style={{width: '100%', height: 200}}/>
+                        <span style={{fontSize: "clamp(20px, 3.5vw, 45px)"}}>{currentGame.PTS}</span>
                     </div>
                     
-                    <span style={{fontSize: 50}}>{currentGame.MATCHUP}</span>
+                    <span style={{fontSize: "clamp(20px, 3.5vw, 50px)"}}>{currentGame.MATCHUP}</span>
                     <div style={{alignItems: 'center', display: 'flex', justifyContent: 'center', marginRight: '5%'}}>
-                        {boxScore[0].at(-1).at(-2) != currentGame.PTS ? <span style={{fontSize: 45}}>{boxScore[0].at(-1).at(-2)}</span> : <span style={{fontSize: 45}}>{boxScore[1].at(-1).at(-2)}</span>}
-                        <img src={`https://cdn.nba.com/logos/nba/${currentGame.OPPONENT_ID}/primary/L/logo.svg`} style={{width: 200, height: 200}}/>
+                        {boxScore[0].at(-1)['points'] != currentGame.PTS ? <span style={{fontSize: "clamp(20px, 3.5vw, 45px)"}}>{boxScore[0].at(-1)['points']}</span> : <span style={{fontSize: "clamp(20px, 3.5vw, 45px)"}}>{boxScore[1].at(-1)['points']}</span>}
+                        <img src={`https://cdn.nba.com/logos/nba/${currentGame.OPPONENT_ID}/primary/L/logo.svg`} style={{width: '100%', height: 200}}/>
                     </div>
                 </div>
                 
@@ -147,9 +159,25 @@ export default function GameLog() {
                                 <tr className='t-row'>
                                     <td>TOTALS</td>
                                     <td></td>
-                                    {boxScore[teamIndex].slice(-1)[0].slice(1).map((cell: any) => (
-                                        <td>{cell}</td>
-                                    ))}
+                                    <td>{boxScore[teamIndex].at(-1)['fieldGoalsMade']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['fieldGoalsAttempted']}</td>
+                                    <td>{(boxScore[teamIndex].at(-1)["fieldGoalsPercentage"]*100).toFixed(1)}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['threePointersMade']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['threePointersAttempted']}</td>
+                                    <td>{(boxScore[teamIndex].at(-1)['threePointersPercentage']*100).toFixed(1)}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['freeThrowsMade']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['freeThrowsAttempted']}</td>
+                                    <td>{(boxScore[teamIndex].at(-1)["freeThrowsPercentage"]*100).toFixed(1)}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['reboundsOffensive']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['reboundsDefensive']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['reboundsTotal']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['assists']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['steals']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['blocks']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['turnovers']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['foulsPersonal']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['points']}</td>
+                                    <td>{boxScore[teamIndex].at(-1)['points']-boxScore[teamIndex^1].at(-1)['points']}</td>
                                 </tr>
                         </tbody>
                     </table>

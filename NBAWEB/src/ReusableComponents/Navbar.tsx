@@ -9,6 +9,7 @@ import { stat } from "fs";
 export default function Navbar () {
     const [user, setUser] = useState("")
     const  {team, setTeam, token, logout, isLoggedIn, username}  = useAuth();
+    const [schedule, setSchedule] = useState<any>([])
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,9 +29,42 @@ export default function Navbar () {
         getUsername()
     }, [token])
 
+    useEffect(() => {
+        let isMounted = true
+        const fetchSchedule = async () => {
+            if (!isMounted) return; // Stop if component unmounted
+
+            try {
+                await get_schedule();
+            } catch (error) {
+                console.error("Something went wrong brodie");
+            }
+
+            if (isMounted) {
+                setTimeout(fetchSchedule, 10000); // Schedule the next call
+            }
+        };
+
+        fetchSchedule(); // Start the loop
+
+        return () => {
+            isMounted = false; // Prevent further execution after unmount
+        };
+    }, []);
+
+    const get_schedule = async() => {
+            try{
+                const response = await axiosInstance.get(`scheduled_games`)
+                console.log(response.data)
+                setSchedule(response.data)
+            }
+            catch (error:any) {
+                console.log("Something went wrong brodie")
+            }
+    }
+
     const changeTeam = async() => {
         try{
-            console.log("Dink donk")
             setTeam(null)
             navigate('home')
         }
@@ -63,6 +97,19 @@ export default function Navbar () {
                     <Link to={`/signup`}>Register</Link> : <button onClick={() => handleLogout()}>Logout</button>} </h2>
                 <h2 className="Navbar">{isLoggedIn ?
                     <button onClick={() => changeTeam()}>Change Team</button>: ""}</h2>
+                <span>{schedule.length > 0 ?
+                    <div style={{display: 'flex', flexDirection: 'row', backgroundColor: 'rgba(100, 108, 255, 0.29)', overflowX: 'auto', width: '1000px'}}> 
+                        {schedule[0].map((game: any, key: any) => (
+                        <div className="Game-Status">
+                            {/* <span key={key} className="Navbar">{game.LIVE_STATUS.QUARTER} {game.LIVE_STATUS.GAME_CLOCK} </span> */}
+                            <span key={key} className="">{game.LIVE_STATUS ? game.START_TIME : game.START_TIME}</span>
+                            <span className="">{Object.keys(game.TEAMS)[1]} {game.TEAMS[Object.keys(game.TEAMS)[1]]["SCORE"] ? game.TEAMS[Object.keys(game.TEAMS)[1]]["SCORE"] : ""}</span>
+                            <span className="">{Object.keys(game.TEAMS)[0]} {game.TEAMS[Object.keys(game.TEAMS)[0]]["SCORE"] ? game.TEAMS[Object.keys(game.TEAMS)[0]]["SCORE"] : ""}</span>
+                        </div>
+                        ))}
+                    </div>
+                    
+                : '  ' }</span>
             </div>
         </>
     )
