@@ -102,7 +102,7 @@ export default function Navbar () {
                         {schedule[0].map((game: any, key: any) => (
                         <div className="Game-Status">
                             {/* <span key={key} className="Navbar">{game.LIVE_STATUS.QUARTER} {game.LIVE_STATUS.GAME_CLOCK} </span> */}
-                            <span key={key} className="">{game.LIVE_STATUS ? game.START_TIME : game.START_TIME}</span>
+                            <span key={key} className="">{game.START_TIME != "Final" && game.LIVE_TIME? ` ${game.LIVE_TIME}` : game.START_TIME}</span>
                             <span className="">{Object.keys(game.TEAMS)[1]} {game.TEAMS[Object.keys(game.TEAMS)[1]]["SCORE"] ? game.TEAMS[Object.keys(game.TEAMS)[1]]["SCORE"] : ""}</span>
                             <span className="">{Object.keys(game.TEAMS)[0]} {game.TEAMS[Object.keys(game.TEAMS)[0]]["SCORE"] ? game.TEAMS[Object.keys(game.TEAMS)[0]]["SCORE"] : ""}</span>
                         </div>

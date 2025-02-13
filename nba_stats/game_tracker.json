@@ -1,148 +1,160 @@
 [
     [
         {
-            "GAME_ID": "0022400674",
-            "START_TIME": "7:00 pm ET",
+            "GAME_ID": "0022400752",
+            "START_TIME": "1:00 pm ET",
             "TEAMS": {
-                "WAS": {
-                    "RECORD": "6-40"
+                "CHA": {
+                    "RECORD": "13-36"
                 },
-                "LAL": {
-                    "RECORD": "26-19"
+                "DET": {
+                    "RECORD": "26-26"
                 }
             }
         },
         {
-            "GAME_ID": "0022400675",
-            "START_TIME": "7:00 pm ET",
+            "GAME_ID": "0022400753",
+            "START_TIME": "2:00 pm ET",
             "TEAMS": {
-                "CLE": {
-                    "RECORD": "38-9"
+                "TOR": {
+                    "RECORD": "16-36"
                 },
-                "ATL": {
-                    "RECORD": "22-25"
-                }
-            }
-        },
-        {
-            "GAME_ID": "0022400677",
-            "START_TIME": "9:00 pm ET",
-            "TEAMS": {
-                "UTA": {
-                    "RECORD": "10-35"
-                },
-                "MIN": {
-                    "RECORD": "26-21"
-                }
-            }
-        },
-        {
-            "GAME_ID": "0022400676",
-            "START_TIME": "9:30 pm ET",
-            "TEAMS": {
                 "HOU": {
-                    "RECORD": "32-14"
-                },
-                "MEM": {
-                    "RECORD": "31-16"
+                    "RECORD": "32-20"
                 }
             }
         },
         {
-            "GAME_ID": "0022400678",
-            "START_TIME": "10:00 pm ET",
+            "GAME_ID": "0022400754",
+            "START_TIME": "2:00 pm ET",
             "TEAMS": {
-                "ORL": {
-                    "RECORD": "24-24"
+                "MIL": {
+                    "RECORD": "27-23"
                 },
-                "POR": {
-                    "RECORD": "18-29"
+                "PHI": {
+                    "RECORD": "20-31"
                 }
             }
         }
     ],
     [
         {
-            "GAME_ID": "0022400679",
+            "GAME_ID": "0022400755",
             "START_TIME": "7:00 pm ET",
             "TEAMS": {
+                "MIN": {
+                    "RECORD": "30-23"
+                },
+                "CLE": {
+                    "RECORD": "42-10"
+                }
+            }
+        },
+        {
+            "GAME_ID": "0022400756",
+            "START_TIME": "7:00 pm ET",
+            "TEAMS": {
+                "ORL": {
+                    "RECORD": "26-28"
+                },
+                "ATL": {
+                    "RECORD": "25-28"
+                }
+            }
+        },
+        {
+            "GAME_ID": "0022400757",
+            "START_TIME": "7:00 pm ET",
+            "TEAMS": {
+                "WAS": {
+                    "RECORD": "9-43"
+                },
+                "SAS": {
+                    "RECORD": "22-28"
+                }
+            }
+        },
+        {
+            "GAME_ID": "0022400758",
+            "START_TIME": "7:30 pm ET",
+            "TEAMS": {
+                "BKN": {
+                    "RECORD": "18-34"
+                },
                 "CHA": {
-                    "RECORD": "12-32"
-                },
-                "LAC": {
-                    "RECORD": "27-20"
+                    "RECORD": "13-36"
                 }
             }
         },
         {
-            "GAME_ID": "0022400680",
-            "START_TIME": "7:00 pm ET",
-            "TEAMS": {
-                "DET": {
-                    "RECORD": "23-24"
-                },
-                "DAL": {
-                    "RECORD": "26-22"
-                }
-            }
-        },
-        {
-            "GAME_ID": "0022400681",
+            "GAME_ID": "0022400759",
             "START_TIME": "7:30 pm ET",
             "TEAMS": {
-                "PHI": {
-                    "RECORD": "19-27"
-                },
-                "DEN": {
-                    "RECORD": "28-19"
-                }
-            }
-        },
-        {
-            "GAME_ID": "0022400682",
-            "START_TIME": "7:30 pm ET",
-            "TEAMS": {
-                "TOR": {
-                    "RECORD": "15-32"
-                },
-                "CHI": {
-                    "RECORD": "20-28"
-                }
-            }
-        },
-        {
-            "GAME_ID": "0022400683",
-            "START_TIME": "8:00 pm ET",
-            "TEAMS": {
-                "NOP": {
-                    "RECORD": "12-36"
+                "MIA": {
+                    "RECORD": "25-25"
                 },
                 "BOS": {
-                    "RECORD": "33-15"
+                    "RECORD": "37-16"
                 }
             }
         },
         {
-            "GAME_ID": "0022400684",
+            "GAME_ID": "0022400760",
             "START_TIME": "8:00 pm ET",
             "TEAMS": {
                 "MIL": {
-                    "RECORD": "26-19"
+                    "RECORD": "27-23"
                 },
-                "SAS": {
-                    "RECORD": "20-24"
+                "GSW": {
+                    "RECORD": "26-26"
                 }
             }
         },
         {
-            "GAME_ID": "0022400685",
-            "START_TIME": "10:00 pm ET",
+            "GAME_ID": "0022400761",
+            "START_TIME": "8:00 pm ET",
             "TEAMS": {
-                "PHX": {
-                    "RECORD": "24-22"
+                "NOP": {
+                    "RECORD": "12-40"
                 },
-                "GSW": {
-                    "RECORD": "24-23"
+                "OKC": {
+                    "RECORD": "42-9"
+                }
+            }
+        },
+        {
+            "GAME_ID": "0022400762",
+            "START_TIME": "8:30 pm ET",
+            "TEAMS": {
+                "DAL": {
+                    "RECORD": "28-25"
+                },
+                "SAC": {
+                    "RECORD": "26-26"
+                }
+            }
+        },
+        {
+            "GAME_ID": "0022400763",
+            "START_TIME": "9:00 pm ET",
+            "TEAMS": {
+                "POR": {
+                    "RECORD": "23-30"
+                },
+                "DEN": {
+                    "RECORD": "34-19"
+                }
+            }
+        },
+        {
+            "GAME_ID": "0022400768",
+            "START_TIME": "10:30 pm ET",
+            "TEAMS": {
+                "LAL": {
+                    "RECORD": "31-19"
+                },
+                "UTA": {
+                    "RECORD": "12-39"
                 }
             }
         }

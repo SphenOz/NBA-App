@@ -13,6 +13,7 @@
     "@svgr/webpack": "^8.1.0",
     "axios": "^1.7.2",
     "jwt-decode": "^4.0.0",
+    "nbaweb": "file:",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",

@@ -44,7 +44,6 @@ def get_schedule():
 async def get_scheduled_games():
     print("Starting Update Game Tracker....")
     while True:
-        print("Starting Update Game Tracker....")
         today = datetime.today().strftime('%Y-%m-%d')
         games_scheduled = []
         for i in range(2):
@@ -64,6 +63,7 @@ async def get_scheduled_games():
                 game_tracker = {}
                 game_tracker["GAME_ID"] = gameid[0]
                 game_tracker["START_TIME"] = game_header[0][4]
+                
                 game_tracker["TEAMS"] = {game_summary[0][4]: {"RECORD" : game_summary[0][7]},
                                         game_summary[1][4]: {"RECORD" : game_summary[1][7]}
                                         }
@@ -82,6 +82,8 @@ async def get_scheduled_games():
                     game_tracker["TEAMS"][live_data_home['teamTricode']]['SCORE'] = live_data_home['score']
                     game_tracker["TEAMS"][live_data_away['teamTricode']]['SCORE'] = live_data_away['score']
                     game_tracker["LIVE_STATUS"] = live_data['period']
+                    print(live_data)
+                    game_tracker["LIVE_TIME"] = live_data['gameStatusText']
                     await asyncio.sleep(.3)
                 j+=1
                 todays_games.append(game_tracker)
